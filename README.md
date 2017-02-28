@@ -1,6 +1,6 @@
 # 291project1
 
-**Database Specification
+**Database Specification**
 
 You are given the following relational schema.
 
@@ -14,13 +14,13 @@ lists(lname,owner)<br>
 includes(lname,member)<br>
 Tables are derived from the Assignment 1 spec and are identical to those in Assignment 2 except the field pwd which is added to users, and the change in the key of table tweets and in the definition of tables that reference the table tweets. The SQL commands to create the tables of the system are given here. Use the given schema in your project and do not change any table/column names as we will be testing your project with the given schema.
 
-**Login Screen
+**Login Screen**
 
 The first screen should provide options for both registered and unregistered users. There must be also an option to exit the program. Registered users should be able to login using a valid user id and password, respectively referred to as usr and pwd in table users. After a registered user signs in, the system should list all tweets or retweets from users who are being followed; the tweets should be ordered based on date from the latest to the oldest. If there are more than 5 such tweets, only 5 would be shown and the user would be given an option to see more but again 5 at a time. The user should be able to select a tweet and see some statistics about the tweet including the number of retweets and the number of replies. Also the user should be able to compose a reply to it (see the section on composing a tweet), or retweet it (i.e. repost it to all people who follow the user).
 
 Unregistered users should be able to sign up by providing a name, email, city, timezone and password. The user id (i.e. the field usr in table users) should be provided by the system and be unique. After a successful login or signup, users should be able to perform the subsequent operations (possibly chosen from a menu) as discussed next.
 
-**System Functionalities
+**System Functionalities**
 
 Users should be able to perform all of the following tasks:
 
@@ -32,7 +32,7 @@ Users should be able to perform all of the following tasks:
 **6. Logout.** There must be an option to log out of the system.
 Task 5 is required for groups of size 3 only.
 
-**Testing
+**Testing**
 
 At development time you will be testing your programs with your own data sets (make sure that it conforms to the project specification). At demo time we will be creating the database using these SQL statements and will be populating it with our own test data set. Your application will be tested under a demo account (and not under your account).
 The demo will be run using the source code submitted and nothing else. Therefore, it is essential to include every file that is needed to compile and run your code including all source code and any makefile or script that you may use to compile or run your code. You will neither be able to change your code, nor use any file other than those submitted. This policy can be altered only in exceptional cases at the instructor's discretion and for a hefty penalty. The code will be executed under a TA account. Do not hard-code username, password or table prefixes (such as username or group name) in your code. As a test drill, you should be able to set up your application under someone else's account (in case of testing, this would be under a TA account) within 3 minutes at most.
