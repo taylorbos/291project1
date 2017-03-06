@@ -14,8 +14,8 @@ def closeDatabase():
 
 
 def getUserid(username):	
-	statement = "SELECT USR FROM USERS WHERE USERS.NAME = '%s'" % username
-	curs.execute(statement)
+	statement = "SELECT USR FROM USERS WHERE USERS.NAME = :s"
+	curs.execute(statement, {'s':username})
 	rs = curs.fetchone()[0]
 	if(curs.rowcount is 0):
 		return None	
@@ -26,12 +26,12 @@ def registerUser(username, email, password, timezone=None, city=None):
 	curs.exectute(getHighestId)
 	rs = curs.fetchone()[0]
 	userId = rs + 1
-	statment = "INSERT INTO USERS VALUES (%n, '%s', '%s', '%s', '%s', %n);" % userId, password, username, email, city, timezone
-	curs.execute(statement)
+	statment = "INSERT INTO USERS VALUES (:ui, :p, :un, :e, :c, :t);"
+	curs.execute(statement, {'ui':userId,'p':password,'un':username,'e':email,'c':city,'t':timezone})
 	
 def loginUser(username, password):
-	statment = "SELECT USR FROM USERS WHERE USERS.NAME = %s AND USERS.PWD = %s;" % username, password
-	curs.execute(statement)
+	statment = "SELECT USR FROM USERS WHERE USERS.NAME = :u AND USERS.PWD = :p;"
+	curs.execute(statement, {'u':username,'p':password})
 	rs = curs.fetchone()[0]
 	if(curs.rowcount is 0):
 		return None
