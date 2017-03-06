@@ -16,10 +16,10 @@ def closeDatabase():
 def getUserid(username):	
 	statement = "SELECT USR FROM USERS WHERE USERS.NAME = :s"
 	curs.execute(statement, {'s':username})
-	rs = curs.fetchone()[0]
 	if(curs.rowcount is 0):
 		return None	
-	return rs
+        rs = curs.fetchone()[0]
+        return rs
 
 def registerUser(username, email, password, timezone=None, city=None):
 	getHighestId = "SELECT MAX(USR) FROM USERS;"
