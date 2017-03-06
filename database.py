@@ -9,33 +9,33 @@ def connectToDatabase():
 
 
 def closeDatabase():
-	con.commit()
-	con.close()
+  con.commit()
+  con.close()
 
 
 def getUserid(username):	
-	statement = "SELECT USR FROM USERS WHERE USERS.NAME = :s"
-	curs.execute(statement, {'s':username})
-	if(curs.rowcount is 0):
-		return None	
-        rs = curs.fetchone()[0]
-        return rs
+  statement = "SELECT USR FROM USERS WHERE USERS.NAME = :s"
+  curs.execute(statement, {'s':username})
+  if(curs.rowcount is 0):
+    return None	
+  rs = curs.fetchone()[0]
+  return rs
 
 def registerUser(username, email, password, timezone=None, city=None):
-	getHighestId = "SELECT MAX(USR) FROM USERS;"
-	curs.exectute(getHighestId)
-	rs = curs.fetchone()[0]
-	userId = rs + 1
-	statment = "INSERT INTO USERS VALUES (:ui, :p, :un, :e, :c, :t);"
-	curs.execute(statement, {'ui':userId,'p':password,'un':username,'e':email,'c':city,'t':timezone})
+  getHighestId = "SELECT MAX(USR) FROM USERS"
+  curs.execute(getHighestId)
+  rs = curs.fetchone()[0]
+  userId = rs + 1
+  statment = "INSERT INTO USERS VALUES (:ui, :p, :un, :e, :c, :t);"
+  curs.execute(statement, {'ui':userId,'p':password,'un':username,'e':email,'c':city,'t':timezone})
 	
 def loginUser(username, password):
-	statment = "SELECT USR FROM USERS WHERE USERS.NAME = :u AND USERS.PWD = :p;"
-	curs.execute(statement, {'u':username,'p':password})
-	rs = curs.fetchone()[0]
-	if(curs.rowcount is 0):
-		return None
-	return rs
+  statment = "SELECT USR FROM USERS WHERE USERS.NAME = :u AND USERS.PWD = :p;"
+  curs.execute(statement, {'u':username,'p':password})
+  rs = curs.fetchone()[0]
+  if(curs.rowcount is 0):
+    return None
+  return rs
 	
 	
 con = connectToDatabase()

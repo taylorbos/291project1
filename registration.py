@@ -57,7 +57,7 @@ def registerProcedure():
   userTimezone = registerTimezone() # TODO: might want to list a bunch of timezones and the user selects one
   userCity = registerCity()
   userPassword = registerPassword()
-  databse.registerUser(userName, userEmail, userPassword, userTimezone, userCity)
+  database.registerUser(userName, userEmail, userPassword, userTimezone, userCity)
   
   # TODO: make sure that we successfully added
   print('Registration complete!')
