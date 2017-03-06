@@ -1,43 +1,12 @@
-import cx_Oracle
+import database
 import os
 import re
-
-def connectToDatabase():
-  f = open('connection.info')
-  username = f.readline().strip()
-  password = f.readline().strip()
-  con = cx_Oracle.connect(username, password, "gwynne.cs.ualberta.ca:1521/CRS")	
-  return con
+import registration
 
 
-def validateEmail():
-  # uses regex to make sure email is valid
-  userEmail = input('Please enter your email address: ')
-  if(re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", userEmail, flags=0) is None):
-    print('Entered email is not in a valid form')
-    validateEmail()
-  return userEmail
-
-
-def registerProcedure():
-  os.system('clear')
-  
-  print('You are now registring a new user: ')
-  userName = input('Please type in your name: ')
-  userEmail = validateEmail()
-  userTimezone = input('Please input a timezone: ') # TODO: might want to list a bunch of timezones and the user selects one
-  userPassword = input('Please create a password for the account: ')
-  
-  # TODO: Now we should generate a user id, and put the user into the user table
-  # *****************
-  # *****************
-  
-  return userName
-  
-  
 def loginProcedure(userName = None):
   os.system('clear')
-  
+  print('Logging in a user\n')
   # check if this user is in database, if not goto new login procedure
   # on login success, return the users id
   if (userName is None):
@@ -63,7 +32,7 @@ def welcomeScreen():
   initalInput = input('Welcome to Twitter!\nMade by: Taylor Bos, Alvin Huang, Oliver Rarog\nTo login, enter your username, to register, type \'register\': ') # get username or register
   
   if (initalInput == 'register'):
-    userName = registerProcedure() # goto register procedure
+    userName = registration.registerProcedure() # goto register procedure
     userId = loginProcedure(userName) # now make user login
   else: 
     userId = loginProcedure(initalInput) # get userid 
@@ -81,6 +50,5 @@ def displayUserMainPage(userId):
 
 # connect to the database, oracle id and pass should be specified in file
 # called connection.info
-con = conectToDatabase()
-
 welcomeScreen()
+
