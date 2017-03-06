@@ -26,13 +26,17 @@ def registerUsername():
 	return userName
 
 
+# TODO: maybe add a list of timezones that the user can select
 def registerTimezone():
 	userTimezone = input('Please enter a timezone: ')
 	return userTimezone	
 	
 	
 def registerCity():
-	userCity = input('Please enter a city: ')
+	userCity = input('Please enter a city, maximum of 12 characters: ')
+	if (len(userCity) > 12):
+		print('City name is too long\n')
+		registerCity()
 	return userCity	
 	
 
@@ -53,9 +57,8 @@ def registerProcedure():
   userTimezone = registerTimezone() # TODO: might want to list a bunch of timezones and the user selects one
   userCity = registerCity()
   userPassword = registerPassword()
+  databse.registerUser(userName, userEmail, userPassword, userTimezone, userCity)
   
-  # TODO: Now we should generate a user id, and put the user into the user table
-  databse.registerUser(userName, userEmail, userTimezone, userCity, userPassword)
-  
-  return userName
+  # TODO: make sure that we successfully added
+  print('Registration complete!')
 
