@@ -32,9 +32,9 @@ def registerUser(username, email, password, timezone=None, city=None):
 def loginUser(username, password):
   statement = "SELECT USR FROM USERS WHERE USERS.NAME = :u AND USERS.PWD = :p"
   curs.execute(statement, {'u':username,'p':password})
-  rs = curs.fetchone()[0]
   if(curs.rowcount is 0):
     return None
+  rs = curs.fetchone()[0]
   return rs
 	
 	
