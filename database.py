@@ -15,6 +15,7 @@ def closeDatabase():
 
 def getUserid(username):	
   statement = "SELECT USR FROM USERS WHERE USERS.NAME = :s"
+  curs.setinputsizes(s = curs.var(cx_Oracle.FIXED_CHAR, 20))
   curs.execute(statement, {'s':username})
   if(curs.rowcount is 0):
     return None	
@@ -27,10 +28,12 @@ def registerUser(username, email, password, timezone=None, city=None):
   rs = curs.fetchone()[0]
   userId = rs + 1
   statement = "INSERT INTO USERS VALUES (:ui, :p, :un, :e, :c, :t)"
+  curs.setinputsizes(ui = int, p = curs.var(cx_Oracle.FIXED_CHAR, 4), un = curs.var(cx_Oracle.FIXED_CHAR, 20), e = curs.var(cx_Oracle.FIXED_CHAR, 15), c = curs.var(cx_Oracle.FIXED_CHAR, 12), t = float)
   curs.execute(statement, {'ui':userId,'p':password,'un':username,'e':email,'c':city,'t':timezone})
 	
 def loginUser(username, password):
   statement = "SELECT USR FROM USERS WHERE USERS.NAME = :u AND USERS.PWD = :p"
+  curs.setinputsizes(u = curs.var(cx_Oracle.FIXED_CHAR, 20), p = curs.var(cx_Oracle.FIXED_CHAR, 4)
   curs.execute(statement, {'u':username,'p':password})
   if(curs.rowcount is 0):
     return None
