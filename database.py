@@ -40,7 +40,21 @@ def loginUser(username, password):
   if(r is None):
     return None
   return r[0]
-	
-	
+
+def searchTweets(keywords):
+  statement = "SELECT DISTINCT * FROM ("
+  n = 0
+  for keyword in keywords:
+    if n != 0:
+      statement = statement + "union "
+    if keyword[0] == "#":
+      n = n + 1
+      statement = statement + "(SELECT TWEETS.* FROM TWEETS, MENTIONS WHERE TWEETS.TID = MENTIONS.TID AND MENTIONS.TERM = '" + keyword[1:] + "') "	
+  statement = statement + ")"
+  curs.execute(statement)
+  r = curs.fetchall()
+  for s in r:
+    print(s[0])
+
 con = connectToDatabase()
 curs = con.cursor()
