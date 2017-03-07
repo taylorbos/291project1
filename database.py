@@ -17,10 +17,10 @@ def getUserid(username):
   statement = "SELECT USR FROM USERS WHERE USERS.NAME = :s"
   curs.setinputsizes(s = curs.var(cx_Oracle.FIXED_CHAR, 20))
   curs.execute(statement, {'s':username})
-  if(curs.rowcount is 0):
+  r = curs.fetchone()
+  if(r is None):
     return None	
-  rs = curs.fetchone()[0]
-  return rs
+  return r[0]
 
 def registerUser(username, email, password, timezone=None, city=None):
   getHighestId = "SELECT MAX(USR) FROM USERS"
@@ -33,12 +33,12 @@ def registerUser(username, email, password, timezone=None, city=None):
 	
 def loginUser(username, password):
   statement = "SELECT USR FROM USERS WHERE USERS.NAME = :u AND USERS.PWD = :p"
-  curs.setinputsizes(u = curs.var(cx_Oracle.FIXED_CHAR, 20), p = curs.var(cx_Oracle.FIXED_CHAR, 4)
+  curs.setinputsizes(u = curs.var(cx_Oracle.FIXED_CHAR, 20), p = curs.var(cx_Oracle.FIXED_CHAR, 4))
   curs.execute(statement, {'u':username,'p':password})
-  if(curs.rowcount is 0):
+  r = curs.fetchone()
+  if(r is None):
     return None
-  rs = curs.fetchone()[0]
-  return rs
+  return r[0]
 	
 	
 con = connectToDatabase()
