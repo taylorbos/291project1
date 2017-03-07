@@ -3,16 +3,20 @@ import os
 import re
 import registration
 import login
+import sys
     
 def welcomeScreen():
   os.system('clear')
   
   # welcome message
-  initalInput = input('Welcome to Twitter!\nMade by: Taylor Bos, Alvin Huang, Oliver Rarog\nTo login, enter your username, to register, type \'register\': ') # get username or register
+  initialInput = input('Welcome to Twitter!\nMade by: Taylor Bos, Alvin Huang, Oliver Rarog\nTo login, enter your username; to register, type \'register\'; to quit, type \'exit\': ') # get username or register or quit
   
-  if (initalInput == 'register'):
+  if (initialInput == 'register'):
     registration.registerProcedure() # goto register procedure
     userId = login.loginProcedure() # now make user login
+  elif (initialInput == 'exit'):
+    print("See you next time!")
+    sys.exit(0)
   else: 
     userId = login.loginProcedure(initalInput) # get userid 
     
