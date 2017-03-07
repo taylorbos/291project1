@@ -1,4 +1,5 @@
 import database
+import os
 
 def loginProcedure(userName = None):
   os.system('clear')

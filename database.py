@@ -26,11 +26,11 @@ def registerUser(username, email, password, timezone=None, city=None):
   curs.execute(getHighestId)
   rs = curs.fetchone()[0]
   userId = rs + 1
-  statment = "INSERT INTO USERS VALUES (:ui, :p, :un, :e, :c, :t);"
+  statement = "INSERT INTO USERS VALUES (:ui, :p, :un, :e, :c, :t)"
   curs.execute(statement, {'ui':userId,'p':password,'un':username,'e':email,'c':city,'t':timezone})
 	
 def loginUser(username, password):
-  statment = "SELECT USR FROM USERS WHERE USERS.NAME = :u AND USERS.PWD = :p;"
+  statement = "SELECT USR FROM USERS WHERE USERS.NAME = :u AND USERS.PWD = :p"
   curs.execute(statement, {'u':username,'p':password})
   rs = curs.fetchone()[0]
   if(curs.rowcount is 0):
