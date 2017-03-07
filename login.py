@@ -13,7 +13,7 @@ def loginProcedure(userName = None):
   userId = database.loginUser(userName, userPassword)
     
   if (userId is None):
-    printf('Incorrect username or password!\n')
+    print('Incorrect username or password!')
     loginProcedure() # on login failure
   
   return userId # on login success
