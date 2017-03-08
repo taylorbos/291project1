@@ -29,7 +29,7 @@ def registerUsername():
 # TODO: maybe add a list of timezones that the user can select
 def registerTimezone():
 	userTimezone = input('Please enter a timezone: ')
-	return userTimezone	
+	return float(userTimezone)
 	
 	
 def registerCity():

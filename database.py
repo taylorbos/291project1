@@ -32,6 +32,14 @@ def registerUser(username, email, password, timezone=None, city=None):
   curs.execute(statement, {'ui':userId,'p':password,'un':username,'e':email,'c':city,'t':timezone})
   con.commit()
 	
+def getUsername(userId):
+	statement = "SELECT NAME FROM USERS WHERE USERS.USR = :ui"
+	curs.execute(statement, {'ui':userId})
+	rs = curs.fetchone()
+	if(rs is None):
+		return None
+	return rs[0]
+  
 def loginUser(username, password):
   statement = "SELECT USR FROM USERS WHERE USERS.NAME = :u AND USERS.PWD = :p"
   curs.setinputsizes(u = curs.var(cx_Oracle.FIXED_CHAR, 20), p = curs.var(cx_Oracle.FIXED_CHAR, 4))
@@ -40,6 +48,11 @@ def loginUser(username, password):
   if(r is None):
     return None
   return r[0]
+
+def getUserMainPageInfo(userId):
+	print(userId)	
+	statement = "SELECT * FROM ((SELECT TWEETS.WRITER, TWEETS.TEXT, TWEETS.TDATE FROM FOLLOWS, TWEETS WHERE FOLLOWS.FLWER = TWEETS.WRITER AND FOLLOWS.FLWER = :ui) UNION (SELECT TWEETS.WRITER, TWEETS.TEXT, TWEETS.TDATE FROM FOLLOWS, RETWEETS, TWEETS WHERE FOLLOWS.FLWER = RETWEETS.USR AND FOLLOWS.FLWER = :ui AND TWEETS.TID = RETWEETS.TID)) A ORDER BY A.TDATE"
+	curs.execute(statement, {'ui':userId})  
 
 def searchTweets(keywords):
   statement = "SELECT DISTINCT * FROM ("

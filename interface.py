@@ -16,12 +16,15 @@ def welcomeScreen():
   else: 
     userId = login.loginProcedure(initalInput) # get userid 
     
-  DisplayUserMainPage(userId) # on login success 
+  displayUserMainPage(userId) # on login success 
   
   
 def displayUserMainPage(userId):
   # displays the main page for the selected user according to specs
-  println('test\n')
+  os.system('clear')
+  print('Displaying main page for user: %s' % database.getUsername(userId))
+  print('Here are some tweets and retweets from people you follow')
+  database.getUserMainPageInfo(userId)
 
 # connect to the database, oracle id and pass should be specified in file
 # called connection.info
