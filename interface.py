@@ -31,8 +31,8 @@ def displayUserMainPage(userId, currentPage=1):
   
 
   userSelection = input('What would you like to do now? Please select an option:\n1. %s\n2.'
-		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n...' % 
-		(UserInput.scrollDownString, UserInput.scrollUpString, UserInput.tweetString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.logoutString))
+		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n...' % 
+		        (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.tweetString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.searchString, UserInput.logoutString))
 
   if (userSelection == UserInput.logoutInput):
     welcomeScreen()
@@ -42,6 +42,8 @@ def displayUserMainPage(userId, currentPage=1):
     displayUserMainPage(userId, currentPage-1)
   if(userSelection == UserInput.tweetInput):
   	 composeTweet(userId)
+  if(userSelection == UserInput.searchInput):
+    searchScreen(userId)
   
   displayUserMainPage(userId)
 
@@ -61,8 +63,35 @@ def displayPage(info, pageNumber):
       break    
     print('%d %s' % (i+1, info[i]))
 
+def searchScreen(userId):
+  os.system('clear')
+  keywords = input("Enter #hashtags or words you would like to search: ").split()
+  r = database.searchTweets(keywords)
+  displaySearch(userId, 1, r)
+  #if r == []:
+   # print("No search results")
+  #else:
+   # displayPage(r, currentPage)
+
+def displaySearch(userId, currentPage, r):
+  if r == []:
+    print("No search results")
+  else:
+    displayPage(r, currentPage)
+  userSelection = input("What would you like to do now? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n5. %s\n6. %s\n..."
+                        % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.mainPageString))
+  if (userSelection ==  UserInput.scrollDownInput):
+    displaySearch(userId, currentPage+1, r)
+  if (userSelection == UserInput.scrollUpInput):
+    displaySearch(userId, currentPage-1, r)
+  if (userSelection == UserInput.mainPageInput):
+    displayUserMainPage(userId, 1)
+
+  displaySearch(userId, 1, r)
 
 # connect to the database, oracle id and pass should be specified in file
 # called connection.info
 welcomeScreen()
 database.closeDatabase()
+
+

@@ -65,8 +65,8 @@ def getUserMainPageInfo(userId):
 	return result
 
 
-def searchTweets():
-  keywords = input("Enter #hastags or words to search: ").split()
+def searchTweets(keywords):
+  #keywords = input("Enter #hastags or words to search: ").split()
   statement = "SELECT DISTINCT * FROM ("
   n = 0
   sizes = ()
@@ -88,11 +88,12 @@ def searchTweets():
   curs.setinputsizes(*sizes)
   curs.execute(statement, args)
   r = curs.fetchall()
-  if r == []:
-    print("No search results")
-  else:
-    for s in r:
-      print(s)
+  result = []
+  for rows in r:
+    tweeterName = getUsername(rows[1])
+    resultString = '%s %s At: %s' % (tweeterName, rows[3], rows[2])
+    result.append(resultString)
+  return result
 
 
 def registerTweet(userId, tweet):
