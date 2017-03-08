@@ -49,10 +49,16 @@ def loginUser(username, password):
     return None
   return r[0]
 
-def getUserMainPageInfo(userId):
-	print(userId)	
+def getUserMainPageInfo(userId):	
 	statement = "SELECT * FROM ((SELECT TWEETS.WRITER, TWEETS.TEXT, TWEETS.TDATE FROM FOLLOWS, TWEETS WHERE FOLLOWS.FLWER = TWEETS.WRITER AND FOLLOWS.FLWER = :ui) UNION (SELECT TWEETS.WRITER, TWEETS.TEXT, TWEETS.TDATE FROM FOLLOWS, RETWEETS, TWEETS WHERE FOLLOWS.FLWER = RETWEETS.USR AND FOLLOWS.FLWER = :ui AND TWEETS.TID = RETWEETS.TID)) A ORDER BY A.TDATE"
-	curs.execute(statement, {'ui':userId})  
+	curs.execute(statement, {'ui':userId})
+	rs = curs.fetchall()
+	i = 0
+	for rows  in rs:
+		if (i is 5):
+			break
+		print(rows)
+		i += 1 
 
 def searchTweets(keywords):
   statement = "SELECT DISTINCT * FROM ("
