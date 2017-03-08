@@ -28,8 +28,11 @@ def displayUserMainPage(userId):
   for i in range(5):
     print('%d %s' % (i+1, info[i]))
 
-  userInput = input('What would you like to do now? Please select an option:\n1. See 5 more tweets\n2. See more info about a tweet. Type \'info\' followed by the tweet number\n3. Reply to a tweet. Type \'reply\' followed by the tweet number\n4. Retweet a tweet. Type \'retweet\' followed by the tweet number\n...')
- 
+  userInput = input('What would you like to do now? Please select an option:\n1. See 5 more tweets\n2.'
+		' See more info about a tweet. Type \'info\' followed by the tweet number\n3. Reply to a '
+		'tweet. Type \'reply\' followed by the tweet number\n4. Retweet a tweet. Type \'retweet\' followed by the tweet number\nTo log out, type \'logout\'\n...')
+  if (userInput is 'logout'):
+    os.exit(0) 
 # connect to the database, oracle id and pass should be specified in file
 # called connection.info
 welcomeScreen()
