@@ -50,16 +50,19 @@ def loginUser(username, password):
   return r[0]
 
 def getUserMainPageInfo(userId):	
-	statement = "SELECT * FROM ((SELECT TWEETS.WRITER, TWEETS.TEXT, TWEETS.TDATE FROM FOLLOWS, TWEETS WHERE FOLLOWS.FLWER = TWEETS.WRITER AND FOLLOWS.FLWER = :ui) UNION (SELECT TWEETS.WRITER, TWEETS.TEXT, TWEETS.TDATE FROM FOLLOWS, RETWEETS, TWEETS WHERE FOLLOWS.FLWER = RETWEETS.USR AND FOLLOWS.FLWER = :ui AND TWEETS.TID = RETWEETS.TID)) A ORDER BY A.TDATE"
+	statement = "SELECT * FROM ((SELECT TWEETS.WRITER, TWEETS.TEXT, TWEETS.TDATE FROM FOLLOWS, TWEETS WHERE FOLLOWS.FLWEE = TWEETS.WRITER AND FOLLOWS.FLWER = :ui) UNION (SELECT RETWEETS.USR, TWEETS.TEXT, RETWEETS.RDATE FROM FOLLOWS, RETWEETS, TWEETS WHERE FOLLOWS.FLWEE = RETWEETS.USR AND FOLLOWS.FLWER = :ui AND TWEETS.TID = RETWEETS.TID)) A ORDER BY A.TDATE DESC"
 	curs.execute(statement, {'ui':userId})
-	rs = curs.fetchall()
+	r = curs.fetchall()
+	result = []
 	i = 0
-	for rows  in rs:
+	for rows in r:
 		if (i is 5):
 			break
-		print(rows)
+		tweeterName = getUsername(rows[0])
+		resultString =  '%s %s At: %s' % (tweeterName, rows[1], rows[2])
+		result.append(resultString)
 		i += 1 
-
+	return result
 def searchTweets(keywords):
   statement = "SELECT DISTINCT * FROM ("
   n = 0

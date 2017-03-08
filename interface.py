@@ -24,8 +24,9 @@ def displayUserMainPage(userId):
   os.system('clear')
   print('Displaying main page for user: %s' % database.getUsername(userId))
   print('Here are some tweets and retweets from people you follow')
-  database.getUserMainPageInfo(userId)
-
+  info = database.getUserMainPageInfo(userId)
+  for results in info:
+    print(results) 
 # connect to the database, oracle id and pass should be specified in file
 # called connection.info
 welcomeScreen()
