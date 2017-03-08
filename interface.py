@@ -31,8 +31,8 @@ def displayUserMainPage(userId, currentPage=1):
   
 
   userSelection = input('What would you like to do now? Please select an option:\n1. %s\n2.'
-		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n...' % 
-		(UserInput.scrollDownString, UserInput.scrollUpString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.logoutString))
+		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n...' % 
+		(UserInput.scrollDownString, UserInput.scrollUpString, UserInput.tweetString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.logoutString))
 
   if (userSelection == UserInput.logoutInput):
     welcomeScreen()
@@ -40,9 +40,19 @@ def displayUserMainPage(userId, currentPage=1):
     displayUserMainPage(userId, currentPage+1)
   if(userSelection == UserInput.scrollUpInput): 	
     displayUserMainPage(userId, currentPage-1)
-  
+  if(userSelection == UserInput.tweetInput):
+  	 composeTweet(userId)
   
   displayUserMainPage(userId)
+
+
+def composeTweet(userId):
+	os.system('clear')
+	print('You are now composing a tweet, type your tweet on the next line, there is a maximum of 80 characters')
+	tweet = input('...')
+	if (len(tweet) > 80):
+		print('Tweet is too long!')
+	database.registerTweet(userId, tweet)
 
 
 def displayPage(info, pageNumber):

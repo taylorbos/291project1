@@ -1,4 +1,5 @@
 import cx_Oracle
+import datetime
 
 def connectToDatabase():
   f = open('connection.info')
@@ -62,6 +63,8 @@ def getUserMainPageInfo(userId):
 		resultString =  '%s %s At: %s' % (tweeterName, rows[1], rows[2])
 		result.append(resultString) 
 	return result
+
+
 def searchTweets():
   keywords = input("Enter #hastags or words to search: ").split()
   statement = "SELECT DISTINCT * FROM ("
@@ -83,6 +86,17 @@ def searchTweets():
   else:
     for s in r:
       print(s)
+
+
+def registerTweet(userId, tweet):
+  getHighestId = "SELECT MAX(TID) FROM TWEETS"
+  curs.execute(getHighestId)
+  tid = curs.fetchone()[0] + 1
+  cdate = datetime.datetime.now()
+  statement = "INSERT INTO TWEETS VALUES (:tid, :uid, :d, :t)"
+  curs.setinputsizes(tid = int, uid = int, d = datetime.datetime, t = curs.var(cx_Oracle.FIXED_CHAR, 80))
+  curs.execute(statement, {'tid':tid, 'uid':userId, 'd':cdate, 't':tweet})
+  con.commit()
 
 con = connectToDatabase()
 curs = con.cursor()
