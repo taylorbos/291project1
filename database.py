@@ -54,14 +54,10 @@ def getUserMainPageInfo(userId):
 	curs.execute(statement, {'ui':userId})
 	r = curs.fetchall()
 	result = []
-	i = 0
 	for rows in r:
-		if (i is 5):
-			break
 		tweeterName = getUsername(rows[0])
 		resultString =  '%s %s At: %s' % (tweeterName, rows[1], rows[2])
-		result.append(resultString)
-		i += 1 
+		result.append(resultString) 
 	return result
 def searchTweets(keywords):
   statement = "SELECT DISTINCT * FROM ("
