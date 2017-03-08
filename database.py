@@ -66,17 +66,24 @@ def searchTweets():
   keywords = input("Enter #hastags or words to search: ").split()
   statement = "SELECT DISTINCT * FROM ("
   n = 0
+  sizes = ()
+  args = ()
   for keyword in keywords:
     if n != 0:
       statement = statement + "union "
     if keyword[0] == "#":
       n = n + 1
-      statement = statement + "(SELECT TWEETS.* FROM TWEETS, MENTIONS WHERE TWEETS.TID = MENTIONS.TID AND MENTIONS.TERM = '" + keyword[1:] + "') "	
+      statement = statement + "(SELECT TWEETS.* FROM TWEETS, MENTIONS WHERE TWEETS.TID = MENTIONS.TID AND MENTIONS.TERM = :" + str(n) + ") "
+      sizes = sizes + (curs.var(cx_Oracle.FIXED_CHAR, 10),)
+      args = args + (keyword[1:],)
     else:
       n = n + 1
-      statement = statement + "(SELECT TWEETS.* FROM TWEETS WHERE TWEETS.TEXT LIKE '%" + keyword + "%') "
+      statement = statement + "(SELECT TWEETS.* FROM TWEETS WHERE TWEETS.TEXT LIKE :" + str(n) + ") "
+      sizes = sizes + (curs.var(cx_Oracle.FIXED_CHAR, 10),)
+      args = args + ("%" + keyword + "%",)
   statement = statement + ")"
-  curs.execute(statement)
+  curs.setinputsizes(*sizes)
+  curs.execute(statement, args)
   r = curs.fetchall()
   if r == []:
     print("No search results")
