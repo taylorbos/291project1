@@ -61,7 +61,8 @@ def getUserMainPageInfo(userId):
 		resultString =  '%s %s At: %s' % (tweeterName, rows[1], rows[2])
 		result.append(resultString) 
 	return result
-def searchTweets(keywords):
+def searchTweets():
+  keywords = input("Enter #hastags or words to search: ").split()
   statement = "SELECT DISTINCT * FROM ("
   n = 0
   for keyword in keywords:
@@ -70,11 +71,17 @@ def searchTweets(keywords):
     if keyword[0] == "#":
       n = n + 1
       statement = statement + "(SELECT TWEETS.* FROM TWEETS, MENTIONS WHERE TWEETS.TID = MENTIONS.TID AND MENTIONS.TERM = '" + keyword[1:] + "') "	
+    else:
+      n = n + 1
+      statement = statement + "(SELECT TWEETS.* FROM TWEETS WHERE TWEETS.TEXT LIKE '%" + keyword + "%') "
   statement = statement + ")"
   curs.execute(statement)
   r = curs.fetchall()
-  for s in r:
-    print(s[0])
+  if r == []:
+    print("No search results")
+  else:
+    for s in r:
+      print(s)
 
 con = connectToDatabase()
 curs = con.cursor()
