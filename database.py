@@ -101,9 +101,11 @@ def registerTweet(userId, tweet):
   curs.execute(getHighestId)
   tid = curs.fetchone()[0] + 1
   cdate = datetime.datetime.now()
-  statement = "INSERT INTO TWEETS VALUES (:tid, :uid, :d, :t)"
-  curs.setinputsizes(tid = int, uid = int, d = datetime.datetime, t = curs.var(cx_Oracle.FIXED_CHAR, 80))
-  curs.execute(statement, {'tid':tid, 'uid':userId, 'd':cdate, 't':tweet})
+  statement = "INSERT INTO TWEETS VALUES (:tid, :userid, :cdate, :text, NULL)"
+  curs.setinputsizes(tid = int, userid = int, cdate = datetime.datetime, text = curs.var(cx_Oracle.FIXED_CHAR, 80))  
+  curs.execute(statement, {'tid':tid, 'userid':userId, 'cdate':cdate, 'text':tweet})
+  
+  
   con.commit()
 
 con = connectToDatabase()
