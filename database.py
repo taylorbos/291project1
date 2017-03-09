@@ -94,11 +94,13 @@ def searchTweets(keywords):
   curs.execute(statement, args)
   r = curs.fetchall()
   result = []
+  ids = []
   for rows in r:
     tweeterName = getUsername(rows[1])
     resultString = '%s %s At: %s' % (tweeterName, rows[3], rows[2])
     result.append(resultString)
-  return result
+    ids.append(rows[1])
+  return result, ids
 
 
 def registerTweet(userId, tweet):
@@ -127,6 +129,17 @@ def registerTweet(userId, tweet):
   	
   con.commit()
 
+def findFollowers(userId):
+  curs.execute("SELECT FOLLOWS.FLWER, FOLLOWS.START_DATE FROM FOLLOWS WHERE FOLLOWS.FLWEE = :u", {'u':userId})
+  r = curs.fetchall()
+  result = []
+  ids = []
+  for rows in r:
+    followerName = getUsername(rows[0])
+    resultString = '%s Since: %s' % (followerName, rows[1])
+    result.append(resultString)
+    ids.append(rows[0])
+  return result, ids
 
 
 con = connectToDatabase()

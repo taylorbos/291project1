@@ -29,8 +29,8 @@ def displayUserMainPage(userId, currentPage=1):
   info, ids = database.getUserMainPageInfo(userId)
   displayPage(info, currentPage)    
   userSelection = input('What would you like to do now? Please select an option:\n1. %s\n2.'
-		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n...' % 
-		        (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.tweetString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.searchString, UserInput.logoutString))
+		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n9. %s\n...' % 
+		        (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.tweetString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.searchString, UserInput.followersString, UserInput.logoutString))
 
   if (userSelection == UserInput.logoutInput):
     welcomeScreen()
@@ -42,6 +42,8 @@ def displayUserMainPage(userId, currentPage=1):
   	 composeTweet(userId)
   elif(userSelection == UserInput.searchInput):
     searchScreen(userId)
+  elif(userSelection == UserInput.followersInput):
+    listFollowers(userId)
   elif(userSelection == UserInput.infoInput):
 	#TODO: make sure the user types a number, so cast can work    
     while(True):
@@ -76,15 +78,18 @@ def displayPage(info, pageNumber):
 
 def searchScreen(userId):
   os.system('clear')
-  keywords = input("Enter #hashtags or words you would like to search: ").split()
-  r = database.searchTweets(keywords)
-  displaySearch(userId, 1, r)
+  keywords = input("Enter #hashtags or words you would like to search: ")
+  keywordslist = keywords.split()
+  r, ids = database.searchTweets(keywordslist)
+  displaySearch(userId, 1, r, keywords, ids)
   #if r == []:
    # print("No search results")
   #else:
    # displayPage(r, currentPage)
 
-def displaySearch(userId, currentPage, r):
+def displaySearch(userId, currentPage, r, keywords, ids):
+  os.system('clear')
+  print("Keywords: %s" %keywords)
   if r == []:
     print("No search results")
   else:
@@ -92,14 +97,58 @@ def displaySearch(userId, currentPage, r):
   userSelection = input("What would you like to do now? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n5. %s\n6. %s\n..."
                         % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.mainPageString))
   if (userSelection ==  UserInput.scrollDownInput):
-    displaySearch(userId, currentPage+1, r)
+    displaySearch(userId, currentPage+1, r, keywords, ids)
   if (userSelection == UserInput.scrollUpInput):
-    displaySearch(userId, currentPage-1, r)
+    displaySearch(userId, currentPage-1, r, keywords, ids)
   if (userSelection == UserInput.mainPageInput):
     displayUserMainPage(userId, 1)
+  #TODO: handle info, reply, retweet
 
-  displaySearch(userId, 1, r)
+  displaySearch(userId, 1, r, keywords, ids)
 
+def isInt(s):
+  try:
+    int(s)
+    return True
+  except ValueError:
+    return False
+#stackoverflow.com/questions/1265665/python-check-if-a-string-represents-an-int-without-using-try-except
+
+def listFollowers(userId):
+  r, ids = database.findFollowers(userId)
+  displayFollowers(userId, 1, r, ids)
+
+def displayFollowers(userId, currentPage, r, ids):
+  os.system('clear')
+  if r == []:
+    print("No followers")
+  else:
+    print("Your followers:")
+    displayPage(r, currentPage)
+  userSelection = input("What would you like to do now? Please select an option :\n1. %s\n2. %s\n3. %s\n4. %s\n..."
+                        % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.followerInfoString, UserInput.mainPageString))
+  if (userSelection == UserInput.scrollDownInput):
+    displayFollowers(userId, currentPage+1, r, ids)
+  if (userSelection == UserInput.scrollUpInput):
+    displayFollowers(userId, currentPage-1, r, ids)
+  if (userSelection == UserInput.mainPageInput):
+    displayUserMainPage(userId, 1)
+  if (userSelection == UserInput.followerInfoString):
+    while(True):
+      selection = input("Which follower (by number) would you like to know about?")
+      if isInt is False:
+        print("Please input a number")
+        continue
+      elif(int(selection) <= (currentPage*5)-5  or int(selection) > currentPage*5 or int(selection) > len(r)):
+        print("Selection out of bounds")
+        continue
+      else:
+        displayFollowerInfo(userId, ids[int(selection)-1])
+      break
+  displayFollowers(userId, currentPage, r, ids)
+
+def displayFollowersInfo(userId, followerId):
+  print("will be stuff here")
 # connect to the database, oracle id and pass should be specified in file
 # called connection.info
 welcomeScreen()
