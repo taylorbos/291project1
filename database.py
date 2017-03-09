@@ -1,5 +1,6 @@
 import cx_Oracle
 import datetime
+import re
 
 def connectToDatabase():
   f = open('connection.info')
@@ -104,8 +105,20 @@ def registerTweet(userId, tweet):
   statement = "INSERT INTO TWEETS VALUES (:tid, :userid, :cdate, :text, NULL)"
   curs.setinputsizes(tid = int, userid = int, cdate = datetime.datetime, text = curs.var(cx_Oracle.FIXED_CHAR, 80))  
   curs.execute(statement, {'tid':tid, 'userid':userId, 'cdate':cdate, 'text':tweet})
-  
-  
+
+  hashtagGrabber = re.findall(r"#(\w+)", tweet)
+  statement = "SELECT TERM FROM MENTIONS"
+  curs.execute(statement)
+  rs = curs.fetchall()
+  rs = [r[0].strip() for r in rs]
+  for hashtags in hashtagGrabber:
+    if (len(hashtags) > 10):
+      continue
+    if (hashtags not in rs):
+      curs.execute("INSERT INTO HASHTAGS VALUES (:hashtag)", {'hashtag':hashtags})  	
+    statement = "INSERT INTO MENTIONS VALUES (:tid, :hashtag)"
+    curs.execute(statement, {'tid':tid, 'hashtag':hashtags})
+  	
   con.commit()
 
 con = connectToDatabase()
