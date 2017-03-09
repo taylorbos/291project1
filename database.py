@@ -28,7 +28,8 @@ def registerUser(username, email, password, timezone=None, city=None):
   getHighestId = "SELECT MAX(USR) FROM USERS"
   curs.execute(getHighestId)
   rs = curs.fetchone()[0]
-  userId = rs + 1
+  if(rs is None): userId = 0  
+  else: userId = rs + 1
   statement = "INSERT INTO USERS VALUES (:ui, :p, :un, :e, :c, :t)"
   curs.setinputsizes(ui = int, p = curs.var(cx_Oracle.FIXED_CHAR, 4), un = curs.var(cx_Oracle.FIXED_CHAR, 20), e = curs.var(cx_Oracle.FIXED_CHAR, 15), c = curs.var(cx_Oracle.FIXED_CHAR, 12), t = float)
   curs.execute(statement, {'ui':userId,'p':password,'un':username,'e':email,'c':city,'t':timezone})
@@ -100,7 +101,9 @@ def searchTweets(keywords):
 def registerTweet(userId, tweet):
   getHighestId = "SELECT MAX(TID) FROM TWEETS"
   curs.execute(getHighestId)
-  tid = curs.fetchone()[0] + 1
+  tid = curs.fetchone()[0]
+  if(tid is None): tid = 0
+  else: tid = tid + 1
   cdate = datetime.datetime.now()
   statement = "INSERT INTO TWEETS VALUES (:tid, :userid, :cdate, :text, NULL)"
   curs.setinputsizes(tid = int, userid = int, cdate = datetime.datetime, text = curs.var(cx_Oracle.FIXED_CHAR, 80))  
