@@ -1,7 +1,7 @@
 searchString = 'To search for a tweet, type \'search\' followed by any keywords you wish to search for'
 scrollDownString = 'To see 5 more results type \'scroll down\''
 scrollUpString = 'To see the 5 previous results type \'scroll up\''
-infoString = 'To see more info about a user or tweet, type \'info\' followed by the number next to the user or tweet'
+infoString = 'To see more info about a user or tweet, type \'info\''
 replyString = 'To reply to a tweet, type \'reply\' followed by the number next to the tweet'
 retweetString = 'To retweet, type \'retweet\' followed by the number next to the tweet'
 tweetString = 'To compose a tweet, type \'tweet\''

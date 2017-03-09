@@ -26,27 +26,38 @@ def displayUserMainPage(userId, currentPage=1):
   os.system('clear')
   print('Displaying main page for user: %s' % database.getUsername(userId))
   print('Here are some tweets and retweets from people you follow')
-  info = database.getUserMainPageInfo(userId)
+  info, ids = database.getUserMainPageInfo(userId)
   displayPage(info, currentPage)    
-  
-
   userSelection = input('What would you like to do now? Please select an option:\n1. %s\n2.'
 		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n...' % 
 		        (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.tweetString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.searchString, UserInput.logoutString))
 
   if (userSelection == UserInput.logoutInput):
     welcomeScreen()
-  if(userSelection == UserInput.scrollDownInput): 	
+  elif(userSelection == UserInput.scrollDownInput): 	
     displayUserMainPage(userId, currentPage+1)
-  if(userSelection == UserInput.scrollUpInput): 	
+  elif(userSelection == UserInput.scrollUpInput): 	
     displayUserMainPage(userId, currentPage-1)
-  if(userSelection == UserInput.tweetInput):
+  elif(userSelection == UserInput.tweetInput):
   	 composeTweet(userId)
-  if(userSelection == UserInput.searchInput):
+  elif(userSelection == UserInput.searchInput):
     searchScreen(userId)
+  elif(userSelection == UserInput.infoInput):
+	#TODO: make sure the user types a number, so cast can work    
+    while(True):
+      selection = input('What tweet would you like to know about? ')
+      if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids)):
+        print('Selection out of bounds!')
+        continue
+      else: displayMoreInfo(ids[int(selection)-1])
+      break
+  
   
   displayUserMainPage(userId)
 
+
+def displayMoreInfo(tweet):
+	print(tweet)
 
 def composeTweet(userId):
 	os.system('clear')
