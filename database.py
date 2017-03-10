@@ -141,6 +141,33 @@ def findFollowers(userId):
     ids.append(rows[0])
   return result, ids
 
+def followerInfo(Id):
+  curs.execute("SELECT COUNT(*) FROM TWEETS WHERE WRITER = :u", {'u':Id})
+  ntweets = curs.fetchone()[0]
+  curs.execute("SELECT COUNT(*) FROM FOLLOWS WHERE FLWER = :u", {'u':Id})
+  nflwees = curs.fetchone()[0]
+  curs.execute("SELECT COUNT(*) FROM FOLLOWS WHERE FLWEE = :u", {'u':Id})
+  nflwers = curs.fetchone()[0]
+  info = "Number of tweets: %s\nNumber of users they follow: %s\nNumber of followers: %s" % (ntweets, nflwees, nflwers)
+  curs.execute("SELECT TWEETS.* FROM TWEETS WHERE WRITER = :u", {'u':Id})
+  t = curs.fetchall()
+  tweets = []
+  for rows in t:
+    resultString = '%s At: %s' % (rows[3], rows[2])
+    tweets.append(resultString)
+  return info, tweets
+
+def follow(flwer, flwee):
+  curs.execute("SELECT * FROM FOLLOWS WHERE FLWER = :r AND FLWEE = :e", {'r':flwer, 'e':flwee})
+  if curs.fetchone() is None:
+    cdate = datetime.datetime.now()
+    statement = "INSERT INTO FOLLOWS VALUES(:r, :e, :cdate)"
+    curs.setinputsizes(r = int, e = int, cdate = datetime.datetime)
+    curs.execute(statement, {'r':flwer, 'e':flwee, 'cdate':cdate})
+    con.commit
+    return "You are now following %s" % (getUsername(flwee))
+  else:
+    return "You already follow %s" % (getUsername(flwee))
 
 con = connectToDatabase()
 curs = con.cursor()

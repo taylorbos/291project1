@@ -133,9 +133,9 @@ def displayFollowers(userId, currentPage, r, ids):
     displayFollowers(userId, currentPage-1, r, ids)
   if (userSelection == UserInput.mainPageInput):
     displayUserMainPage(userId, 1)
-  if (userSelection == UserInput.followerInfoString):
+  if (userSelection == UserInput.followerInfoInput):
     while(True):
-      selection = input("Which follower (by number) would you like to know about?")
+      selection = input("Which follower (by number) would you like to know about? ")
       if isInt is False:
         print("Please input a number")
         continue
@@ -143,12 +143,50 @@ def displayFollowers(userId, currentPage, r, ids):
         print("Selection out of bounds")
         continue
       else:
-        displayFollowerInfo(userId, ids[int(selection)-1])
+        os.system('clear')
+        displayFollowersInfo(userId, ids[int(selection)-1], 0)
       break
   displayFollowers(userId, currentPage, r, ids)
 
-def displayFollowersInfo(userId, followerId):
-  print("will be stuff here")
+def displayFollowersInfo(userId, followerId, currentPage):
+  info, tweets = database.followerInfo(followerId)
+  print(info)
+  if tweets == []:
+    print("This user has no tweets")
+  else:
+    print("Tweets:")
+    if currentPage == 0:
+      for i in range(0, 3):
+        if (i < len(tweets)):
+          print('%d %s' % (i+1, tweets[1]))
+    else:
+      displayPage(tweets, currentPage)
+  if currentPage == 0:
+    userSelection = input("What would you like to do now? Please select an option:\n1. To show more tweets, type \'more\'\n2. %s\n3. %s\n..."
+                          % (UserInput.followString, UserInput.backString))
+  else:
+    userSelection = input("What would you like to do now? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n..."
+                          % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.followString, UserInput.backString))
+  if (userSelection == 'more'):
+    os.system('clear')
+    displayFollowersInfo(userId, followerId, currentPage+1)
+  if (userSelection == UserInput.scrollDownInput):
+    os.system('clear')
+    displayFollowersInfo(userId, followerId, currentPage+1)
+  if (userSelection == UserInput.scrollUpInput):
+    os.system('clear')
+    displayFollowersInfo(userId, followerId, currentPage+1)
+  if (userSelection == UserInput.backInput):
+    listFollowers(userId)
+  if (userSelection == UserInput.followInput):
+    os.system('clear')
+    f = database.follow(userId, followerId)
+    print(f)
+    displayFollowersInfo(userId, followerId, currentPage)
+  os.system('clear')
+  displayFollowersInfo(userId, followerId, currentPage)
+ 
+
 # connect to the database, oracle id and pass should be specified in file
 # called connection.info
 welcomeScreen()
