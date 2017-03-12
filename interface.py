@@ -43,10 +43,18 @@ def displayUserMainPage(userId, currentPage=1):
   elif(userSelection == UserInput.replyInput):
     while(True):
       selection = input('What tweet would you like to reply to? ')
-      if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids)):
+      if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids) or int(selection) < (currentPage*5-5)):
         print('Selection out of bounds!')
         continue
       else: composeTweet(userId, ids[int(selection)-1])
+      break
+  elif(userSelection == UserInput.retweetInput):
+    while(True):
+      selection = input('What tweet would you like to retweet? ')
+      if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids) or int(selection) < (currentPage*5-5)):
+        print('Selection out of bounds!')
+        continue
+      else: database.registerRetweet(userId, ids[int(selection)-1])
       break
   elif(userSelection == UserInput.searchInput):
     searchScreen(userId)
@@ -57,7 +65,7 @@ def displayUserMainPage(userId, currentPage=1):
   elif(userSelection == UserInput.infoInput):   
     while(True):
       selection = input('What tweet would you like to know about? ')
-      if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids)):
+      if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids) or int(selection) < (currentPage*5-5)):
         print('Selection out of bounds!')
         continue
       else: displayMoreInfo(ids[int(selection)-1])
@@ -78,6 +86,7 @@ def composeTweet(userId, replyTo=None):
     print('Tweet is too long!')
     composeTweet(userId, replyTo)
   database.registerTweet(userId, tweet, replyTo)
+
 
 
 def displayPage(info, pageNumber):

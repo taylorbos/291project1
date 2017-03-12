@@ -154,6 +154,12 @@ def registerTweet(userId, tweet, replyTo=None):
   	
   con.commit()
 
+def registerRetweet(userId, tweet):
+  cdate = datetime.datetime.now()
+  statment = "INSERT INTO RETWEETS VALUES (:uid, :tid, :cdate)"
+  curs.execute(statement, {'uid':userId, 'tid':tweet, 'cdate'cdate})
+  con.commit()
+
 
 def getNumberRetweets(tweet):
   statement = "SELECT COUNT(*) FROM RETWEETS WHERE RETWEETS.TID = :tid"
