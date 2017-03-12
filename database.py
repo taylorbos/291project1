@@ -94,11 +94,38 @@ def searchTweets(keywords):
   curs.execute(statement, args)
   r = curs.fetchall()
   result = []
+  ids = []
   for rows in r:
     tweeterName = getUsername(rows[1])
     resultString = '%s %s At: %s' % (tweeterName, rows[3], rows[2])
     result.append(resultString)
-  return result
+    ids.append(rows[1])
+  return result, ids
+
+def searchUsers(keyword):
+  keyword = input("Enter #hastags or words to search: ")
+  statement = "SELECT DISTINCT * FROM ("
+  n = 0
+  sizes = ()
+  args = ()
+
+  statement = statement + "(SELECT * FROM USERS WHERE USERS.TEXT LIKE :" + str(n) + ") "
+
+  sizes = sizes + (curs.var(cx_Oracle.FIXED_CHAR, 20),)
+  args = args + ("%" + keyword + "%",)
+  statement = statement + ")"
+  
+  curs.setinputsizes(*sizes)
+  curs.execute(statement, args)
+  r = curs.fetchall()
+  result = []
+  ids = []
+  for rows in r:
+    tweeterName = getUsername(rows[1])
+    resultString = '%s %s At: %s' % (tweeterName, rows[3], rows[2])
+    result.append(resultString)
+    ids.append(rows[1])
+  return result, ids
 
 
 def registerTweet(userId, tweet):
@@ -127,6 +154,7 @@ def registerTweet(userId, tweet):
   	
   con.commit()
 
+
 def getNumberRetweets(tweet):
   statement = "SELECT COUNT(*) FROM RETWEETS WHERE RETWEETS.TID = :tid"
   curs.execute(statement, {'tid':tweet})
@@ -143,6 +171,46 @@ def getNumberReplies(tweet):
     return 0
   return rs[0][0]
 
+def findFollowers(userId):
+  curs.execute("SELECT FOLLOWS.FLWER, FOLLOWS.START_DATE FROM FOLLOWS WHERE FOLLOWS.FLWEE = :u", {'u':userId})
+  r = curs.fetchall()
+  result = []
+  ids = []
+  for rows in r:
+    followerName = getUsername(rows[0])
+    resultString = '%s Since: %s' % (followerName, rows[1])
+    result.append(resultString)
+    ids.append(rows[0])
+  return result, ids
+
+def followerInfo(Id):
+  curs.execute("SELECT COUNT(*) FROM TWEETS WHERE WRITER = :u", {'u':Id})
+  ntweets = curs.fetchone()[0]
+  curs.execute("SELECT COUNT(*) FROM FOLLOWS WHERE FLWER = :u", {'u':Id})
+  nflwees = curs.fetchone()[0]
+  curs.execute("SELECT COUNT(*) FROM FOLLOWS WHERE FLWEE = :u", {'u':Id})
+  nflwers = curs.fetchone()[0]
+  info = "Number of tweets: %s\nNumber of users they follow: %s\nNumber of followers: %s" % (ntweets, nflwees, nflwers)
+  curs.execute("SELECT TWEETS.* FROM TWEETS WHERE WRITER = :u", {'u':Id})
+  t = curs.fetchall()
+  tweets = []
+  for rows in t:
+    resultString = '%s At: %s' % (rows[3], rows[2])
+    tweets.append(resultString)
+  return info, tweets
+
+
+def follow(flwer, flwee):
+  curs.execute("SELECT * FROM FOLLOWS WHERE FLWER = :r AND FLWEE = :e", {'r':flwer, 'e':flwee})
+  if curs.fetchone() is None:
+    cdate = datetime.datetime.now()
+    statement = "INSERT INTO FOLLOWS VALUES(:r, :e, :cdate)"
+    curs.setinputsizes(r = int, e = int, cdate = datetime.datetime)
+    curs.execute(statement, {'r':flwer, 'e':flwee, 'cdate':cdate})
+    con.commit
+    return "You are now following %s" % (getUsername(flwee))
+  else:
+    return "You already follow %s" % (getUsername(flwee))
 
 con = connectToDatabase()
 curs = con.cursor()
