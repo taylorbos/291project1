@@ -99,7 +99,7 @@ def searchTweets(keywords):
     tweeterName = getUsername(rows[1])
     resultString = '%s %s At: %s' % (tweeterName, rows[3], rows[2])
     result.append(resultString)
-    ids.append(rows[1])
+    ids.append(rows[0])
   return result, ids
 
 def searchUsers(keyword):
