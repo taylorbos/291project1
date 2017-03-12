@@ -13,7 +13,7 @@ followersString = 'To see your followers, type \'followers\''
 followerInfoString = 'To see some information about your followers, type \'follower info\''
 mainPageString = 'To return to the main page, type \'main page\''
 followString = 'To follow a particular '
-
+userInfoString = 'To see more information about a user, type \'info\''
 
 searchInput = 'search'
 scrollDownInput = 'scroll down'

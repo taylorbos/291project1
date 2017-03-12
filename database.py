@@ -123,6 +123,7 @@ def searchUsers(keyword):
     resultString = '%s %s' % (rows[0].strip(), rows[1])
     result.append(resultString)
     ids.append(rows[1])
+  result.sort(key=len)
   return result, ids
 
 

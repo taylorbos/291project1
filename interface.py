@@ -137,16 +137,27 @@ def displayUserSearch(userId, currentPage, r, keyword, ids):
   else:
     displayPage(r, currentPage)
   userSelection = input("What would you like to do now? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n..."
-                        % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.infoString, UserInput.mainPageString))
+                        % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.userInfoString, UserInput.mainPageString))
   if (userSelection == UserInput.scrollDownInput):
     displayUserSearch(userId, currentPage+1, r, keyword, ids)
   elif (userSelection == UserInput.scrollUpInput):
     displayUserSearch(userId, currentPage-1, r, keyword, ids)
   elif (userSelection == UserInput.mainPageInput):
     displayUserMainPage(userId, 1)
-  #TODO: handle info
-  elif (userSelection == UserInput.userInfoInput):
-    displayUserInfo(userId, 1)
+  elif (userSelection == UserInput.infoInput):
+    while(True):
+      selection = input("Which user (by number) would you like to know about? ")
+      if isInt is False:
+        print("Please input a number")
+        continue
+      elif(int(selection) <= (currentPage*5)-5  or int(selection) > currentPage*5 or int(selection) > len(r)):
+        print("Selection out of bounds")
+        continue
+      else:
+        os.system('clear')
+        displayFollowersInfo(userId, ids[int(selection)-1], 0)
+      break
+
   displayUserSearch(userId, 1, r, keyword, ids)
 
 
