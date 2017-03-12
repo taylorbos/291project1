@@ -274,14 +274,25 @@ def displayFollowersInfo(userId, followerId, currentPage):
     else:
       displayPage(tweets, currentPage)
   if currentPage == 0:
-    userSelection = input("What would you like to do now? Please select an option:\n1. To show more tweets, type \'more\'\n2. %s\n3. %s\n..."
-                          % (UserInput.followString, UserInput.backString))
+    userSelection = input("What would you like to do now? Please  select an option:\n1. To show more tweets, type \'more\'\n2. %s\n3. %s\n4. Add user to a list, \'list\'\n..."
+                          % (UserInput.followString, UserInput.b\
+ackString))
   else:
-    userSelection = input("What would you like to do now? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n..."
+    userSelection = input("What would you like to do now? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n5. Add user to a list, type \'list\'\n..."
                           % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.followString, UserInput.backString))
+
+
+
   if (userSelection == 'more'):
     os.system('clear')
     displayFollowersInfo(userId, followerId, currentPage+1)
+  if (userSelection == 'list'):
+    os.system('clear')
+    ln = input("Which list would you like to add to? ")
+    if database.ifList(ln):
+      f = database.addMember(ln, followerId)
+      print(f)
+    displayFollowersInfo(userId, followerId, currentPage)
   if (userSelection == UserInput.scrollDownInput):
     os.system('clear')
     displayFollowersInfo(userId, followerId, currentPage+1)
