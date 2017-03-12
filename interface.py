@@ -275,8 +275,7 @@ def displayFollowersInfo(userId, followerId, currentPage):
       displayPage(tweets, currentPage)
   if currentPage == 0:
     userSelection = input("What would you like to do now? Please  select an option:\n1. To show more tweets, type \'more\'\n2. %s\n3. %s\n4. Add user to a list, \'list\'\n..."
-                          % (UserInput.followString, UserInput.b\
-ackString))
+                          % (UserInput.followString, UserInput.backString))
   else:
     userSelection = input("What would you like to do now? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n5. Add user to a list, type \'list\'\n..."
                           % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.followString, UserInput.backString))
