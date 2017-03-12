@@ -28,45 +28,59 @@ def displayUserMainPage(userId, currentPage=1, clear=True):
   displayPage(info, currentPage, clear)
   print('Displaying main page for user: %s' % database.getUsername(userId))
   print('Here are some tweets and retweets from people you follow')    
+  # This provides the user with options on what to do
   userSelection = input('What would you like to do now? Please select an option:\n1. %s\n2.'
 		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n9. %s\n10. %s\n11. %s\n...' % 
 		        (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.tweetString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.searchString, UserInput.userString, UserInput.followersString, UserInput.manageListsString, UserInput.logoutString))
 
   if (userSelection == UserInput.logoutInput):
-    welcomeScreen()
+    welcomeScreen() # user wants to logout, go to welcome screen
   elif(userSelection == UserInput.scrollDownInput): 	
-   if(currentPage+1 <= len(info)/5):  displayUserMainPage(userId, currentPage+1)
+   if(currentPage+1 <= len(info)/5):  displayUserMainPage(userId, currentPage+1) # scroll page down
   elif(userSelection == UserInput.scrollUpInput): 	
-    if(currentPage-1 > 0): displayUserMainPage(userId, currentPage-1)
+    if(currentPage-1 > 0): displayUserMainPage(userId, currentPage-1) # scroll page up
   elif(userSelection == UserInput.tweetInput):
-    composeTweet(userId)
+    composeTweet(userId) # goto tweet creation screen
   elif(userSelection == UserInput.replyInput):
+    # allows user to select a tweet from a list, then reply to it
     while(True):
       selection = input('What tweet would you like to reply to? ')
+      if(selection.isdigit() is False):
+        print("Please enter a number only")
+        continue
       if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids) or int(selection) < (currentPage*5-5)):
         print('Selection out of bounds!')
         continue
+      
       else: composeTweet(userId, ids[int(selection)-1])
       break
   elif(userSelection == UserInput.retweetInput):
+    # user selects tweet to retweet
     while(True):
       selection = input('What tweet would you like to retweet? ')
+      if(selection.isdigit() is False):
+        print("Please enter a number only")
+        continue
       if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids) or int(selection) < (currentPage*5-5)):
         print('Selection out of bounds!')
         continue
       else: database.registerRetweet(userId, ids[int(selection)-1])
       break
   elif(userSelection == UserInput.searchInput):
-    searchScreen(userId)
+    searchScreen(userId) # goes to search menu
   elif(userSelection == UserInput.manageListsInput):
-    manageLists(userId)
+    manageLists(userId) # goes to list manager menu
   elif(userSelection == UserInput.userInput):
-    userScreen(userId)
+    userScreen(userId) # goes to user select menu
   elif(userSelection == UserInput.followersInput):
-    listFollowers(userId)
+    listFollowers(userId) # lists followers
   elif(userSelection == UserInput.infoInput):   
+    # user can select a tweet to get more info
     while(True):
       selection = input('What tweet would you like to know about? ')
+      if(selection.isdigit() is False):
+        print("Please enter a number only")
+        continue
       if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids) or int(selection) < (currentPage*5-5)):
         print('Selection out of bounds!')
         continue
@@ -74,12 +88,13 @@ def displayUserMainPage(userId, currentPage=1, clear=True):
       break
       clear = False;
   
-  
+  # keep displaying the main page
   displayUserMainPage(userId, currentPage, clear)
 
 
 def displayMoreInfo(tweet):
   os.system('clear')
+  # gets the info about the tweet
   print('\nThis tweet has been retweeted %i times and replied to %i times\n' % (database.getNumberRetweets(tweet), database.getNumberReplies(tweet)))  	
 
 def composeTweet(userId, replyTo=None):
@@ -289,11 +304,11 @@ def createList(userId):
     manageLists(userId)
   elif len(listName) > 12:
     print("Name too long")
-    createList(userId)
+    listName = createList(userId)
   else:
     if database.ifList(listName) is True:
       print("list already exists")
-      createList(userId)
+      listName = createList(userId)
     else:
       database.createList(listName, userId)
                     

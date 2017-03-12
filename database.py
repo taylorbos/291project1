@@ -20,6 +20,7 @@ def getUserid(username):
   curs.setinputsizes(s = curs.var(cx_Oracle.FIXED_CHAR, 20))
   curs.execute(statement, {'s':username})
   r = curs.fetchone()
+  # returns none if no such user exists
   if(r is None):
     return None	
   return r[0]
@@ -29,7 +30,7 @@ def registerUser(username, email, password, timezone=None, city=None):
   curs.execute(getHighestId)
   rs = curs.fetchone()[0]
   if(rs is None): userId = 0  
-  else: userId = rs + 1
+  else: userId = rs + 1 # userId is one higher than the current highest id
   statement = "INSERT INTO USERS VALUES (:ui, :p, :un, :e, :c, :t)"
   curs.setinputsizes(ui = int, p = curs.var(cx_Oracle.FIXED_CHAR, 4), un = curs.var(cx_Oracle.FIXED_CHAR, 20), e = curs.var(cx_Oracle.FIXED_CHAR, 15), c = curs.var(cx_Oracle.FIXED_CHAR, 12), t = float)
   curs.execute(statement, {'ui':userId,'p':password,'un':username,'e':email,'c':city,'t':timezone})
@@ -53,7 +54,9 @@ def loginUser(username, password):
   return r[0]
 
 def getUserMainPageInfo(userId):	
-	statement = ("SELECT * FROM ((SELECT TWEETS.WRITER, TWEETS.TEXT, TWEETS.TDATE, TWEETS.TID FROM FOLLOWS,"
+	
+  # this statement selects all tweets and retweets that people who the user follows have done
+  statement = ("SELECT * FROM ((SELECT TWEETS.WRITER, TWEETS.TEXT, TWEETS.TDATE, TWEETS.TID FROM FOLLOWS,"
 	" TWEETS WHERE FOLLOWS.FLWEE = TWEETS.WRITER AND FOLLOWS.FLWER = :ui) UNION (SELECT RETWEETS.USR,"
 	" TWEETS.TEXT, RETWEETS.RDATE, RETWEETS.TID FROM FOLLOWS, RETWEETS, TWEETS WHERE FOLLOWS.FLWEE = RETWEETS.USR "
 	"AND FOLLOWS.FLWER = :ui AND TWEETS.TID = RETWEETS.TID)) A ORDER BY A.TDATE DESC")
@@ -139,14 +142,17 @@ def registerTweet(userId, tweet, replyTo=None):
   curs.setinputsizes(tid = int, userid = int, cdate = datetime.datetime, text = curs.var(cx_Oracle.FIXED_CHAR, 80))  
   curs.execute(statement, {'tid':tid, 'userid':userId, 'cdate':cdate, 'text':tweet, 'rplyto':replyTo})
 
+  # uses regex to grab any hashtags that are in the text
   hashtagGrabber = re.findall(r"#(\w+)", tweet)
   statement = "SELECT TERM FROM MENTIONS"
   curs.execute(statement)
   rs = curs.fetchall()
   rs = [r[0].strip() for r in rs]
   for hashtags in hashtagGrabber:
+    # loop will go through each pulled hastag and add it to the table
     if (len(hashtags) > 10):
       continue
+    # checks if the hashtag already exits, if not add it to the table
     if (hashtags not in rs):
       curs.execute("INSERT INTO HASHTAGS VALUES (:hashtag)", {'hashtag':hashtags})  	
     statement = "INSERT INTO MENTIONS VALUES (:tid, :hashtag)"
@@ -159,6 +165,7 @@ def registerRetweet(userId, tweet):
   curs.execute(statement, {'userid':userId, 'tid':tweet})
   rs = curs.fetchall()
   if(rs is not None):
+    # user can't retweet same tweet twice
     print("You have already retweeted this tweet!")
     return
 
@@ -276,6 +283,6 @@ def ifList(listName):
   else:
     return True
                                   
-                                
+                               
 con = connectToDatabase()
 curs = con.cursor()

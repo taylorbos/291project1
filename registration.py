@@ -26,9 +26,12 @@ def registerUsername():
 	return userName
 
 
-# TODO: maybe add a list of timezones that the user can select
+
 def registerTimezone():
 	userTimezone = input('Please enter a timezone: ')
+	if(userTimezone.isdigit() is false):
+		print("Please input a number only")
+		userTimezone = registerTimezone()
 	return float(userTimezone)
 	
 	
@@ -59,6 +62,6 @@ def registerProcedure():
   userPassword = registerPassword()
   database.registerUser(userName, userEmail, userPassword, userTimezone, userCity)
   
-  # TODO: make sure that we successfully added
+
   print('Registration complete!')
 
