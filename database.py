@@ -82,11 +82,13 @@ def searchTweets(keywords):
     if keyword[0] == "#":
       n = n + 1
       statement = statement + "(SELECT TWEETS.* FROM TWEETS, MENTIONS WHERE TWEETS.TID = MENTIONS.TID AND MENTIONS.TERM = :" + str(n) + ") "
+      print(str(n))
       sizes = sizes + (curs.var(cx_Oracle.FIXED_CHAR, 10),)
       args = args + (keyword[1:],)
     else:
       n = n + 1
       statement = statement + "(SELECT TWEETS.* FROM TWEETS WHERE TWEETS.TEXT LIKE :" + str(n) + ") "
+      print(str(n))
       sizes = sizes + (curs.var(cx_Oracle.FIXED_CHAR, 10),)
       args = args + ("%" + keyword + "%",)
   statement = statement + ")"
@@ -103,16 +105,11 @@ def searchTweets(keywords):
   return result, ids
 
 def searchUsers(keyword):
-  keyword = input("Enter #hastags or words to search: ")
-  statement = "SELECT DISTINCT * FROM ("
-  n = 0
-  sizes = ()
-  args = ()
+  #keyword = input("Enter the user or city you would like to search: ")
+  statement = "SELECT DISTINCT * FROM (SELECT NAME FROM USERS WHERE NAME LIKE :keyword OR CITY LIKE:keyword)"
 
-  statement = statement + "(SELECT * FROM USERS WHERE USERS.TEXT LIKE :" + str(n) + ") "
-
-  sizes = sizes + (curs.var(cx_Oracle.FIXED_CHAR, 20),)
-  args = args + ("%" + keyword + "%",)
+  sizes = (curs.var(cx_Oracle.FIXED_CHAR, 20),)
+  args = ("%" + keyword + "%")
   statement = statement + ")"
   
   curs.setinputsizes(*sizes)

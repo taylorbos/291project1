@@ -14,6 +14,7 @@ followerInfoString = 'To see some information about your followers, type \'follo
 mainPageString = 'To return to the main page, type \'main page\''
 followString = 'To follow a particular '
 
+
 searchInput = 'search'
 scrollDownInput = 'scroll down'
 scrollUpInput = 'scroll up'
@@ -27,4 +28,5 @@ registerInput = 'register'
 followersInput = 'followers'
 userInput = 'user'
 followerInfoInput = 'follower info'
+userInfoInput = 'user info'
 mainPageInput = 'main page'

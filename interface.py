@@ -121,7 +121,7 @@ def displaySearch(userId, currentPage, r, keywords, ids):
 def userScreen(userId):
   os.system('clear')
   keyword = input("Enter the user or city you would like to search: ")
-  r, ids = database.searchTweets(keyword)
+  database.searchUsers(keyword)
   displayUserSearch(userId, 1, r, keyword, ids)
   #if r == []:
    # print("No search results")
@@ -137,15 +137,16 @@ def displayUserSearch(userId, currentPage, r, keyword, ids):
     displayPage(r, currentPage)
   userSelection = input("What would you like to do now? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n..."
                         % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.infoString, UserInput.mainPageString))
-  if (userSelection ==  UserInput.scrollDownInput):
-    displaySearch(userId, currentPage+1, r, keywords, ids)
-  if (userSelection == UserInput.scrollUpInput):
-    displaySearch(userId, currentPage-1, r, keywords, ids)
-  if (userSelection == UserInput.mainPageInput):
+  if (userSelection == UserInput.scrollDownInput):
+    displayUserSearch(userId, currentPage+1, r, keyword, ids)
+  elif (userSelection == UserInput.scrollUpInput):
+    displayUserSearch(userId, currentPage-1, r, keyword, ids)
+  elif (userSelection == UserInput.mainPageInput):
     displayUserMainPage(userId, 1)
   #TODO: handle info
-
-  displaySearch(userId, 1, r, keyword, ids)
+  elif (userSelection == UserInput.userInfoInput):
+    displayUserInfo(userId, 1)
+  displayUserSearch(userId, 1, r, keyword, ids)
 
 
 
