@@ -58,6 +58,8 @@ def displayUserMainPage(userId, currentPage=1, clear=True):
       break
   elif(userSelection == UserInput.searchInput):
     searchScreen(userId)
+  elif(userSelection == UserInput.manageListsInput):
+    manageLists(userId)
   elif(userSelection == UserInput.userInput):
     userScreen(userId)
   elif(userSelection == UserInput.followersInput):
@@ -77,7 +79,7 @@ def displayUserMainPage(userId, currentPage=1, clear=True):
 
 
 def displayMoreInfo(tweet):
-	os.system('clear')
+  os.system('clear')
   print('\nThis tweet has been retweeted %i times and replied to %i times\n' % (database.getNumberRetweets(tweet), database.getNumberReplies(tweet)))  	
 
 def composeTweet(userId, replyTo=None):
@@ -216,7 +218,7 @@ def displayFollowers(userId, currentPage, r, ids):
   if (userSelection == UserInput.followerInfoInput):
     while(True):
       selection = input("Which follower (by number) would you like to know about? ")
-      if isInt is False:
+      if isInt(selection) is False:
         print("Please input a number")
         continue
       elif(int(selection) <= (currentPage*5)-5  or int(selection) > currentPage*5 or int(selection) > len(r)):
@@ -266,10 +268,111 @@ def displayFollowersInfo(userId, followerId, currentPage):
   os.system('clear')
   displayFollowersInfo(userId, followerId, currentPage)
  
+def manageLists(userId):
+  os.system('clear')
+  userSelection = input("What would you like to do? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n..."
+                        % (UserInput.yourListsString, UserInput.otherListsString, UserInput.createListString, UserInput.backString))
+  if (userSelection == UserInput.backInput):
+    displayUserMainPage(userId, 1)
+  elif (userSelection == UserInput.yourListsInput):
+    displayYourLists(userId)
+  elif (userSelection == UserInput.otherListsInput):
+    displayOtherLists(userId)
+  elif (userSelection == UserInput.createListInput):
+    displayCreateList(userId)
+  else:
+    manageLists(userId)
+              
+def createList(userId):
+  listName = input('Choose a name for your list (max 12 characters)\n or type \'back\' to go back\n ')
+  if (listName == 'back'):
+    manageLists(userId)
+  elif len(listName) > 12:
+    print("Name too long")
+    createList(userId)
+  else:
+    if database.ifList is True:
+      print("list already exists")
+      createList(userId)
+    else:
+      database.createList(listName, userId)
+                    
+def displayYourLists(userId):
+  os.system('clear')
+  lists = database.yourLists(userId)
+  if lists == []:
+    print("You have no lists")
+  else:
+    for lst in lists:
+      print(lst)
+  userSelection = input("What would you like to do? Please select an option:\n1. %s\n2. %s\n..." % (UserInput.listMembersString,UserInput.backString))
+  if (userSelection == UserInput.listMembersInput):
+    memberList(userId)
+  if (userSelection == UserInput.backInput):
+    manageLists(userId)
+  else:
+    displayYourLists(userId)
+                                        
+def displayOtherLists(userId):
+  os.system('clear')
+  lists = database.otherLists(userId)
+  if lists == []:
+    print("You are in no lists")
+  else:
+    for lst in lists:
+      print(lst)
+  userSelection = input('To go back type \'back\'\n')
+  if (userSelection == 'back'):
+    manageLists(userId)
+  displayOtherLists(userId)
+                                  
+def memberList(userId):
+  userSelection = input("Which list would you like to see the members of? ")
+  if (database.ifList(userSelection)):
+    memberNames, memberIds = database.getMembers(userSelection)
+    displayMembers(userId, userSelection, memberNames, memberIds, 1)
+  else:
+    print("That is not a list that you own.")
+    uinput = input('If you would like to try again type \'again\'\nElse you can type \'back\' to go back\n...')
+    if (uinput == 'again'):
+      memberList(userId)
+    else:
+      displayYourLists(userId)
 
+def displayMembers(userId, listName, memberNames, memberIds, currentPage):
+  os.system('clear')
+  print("Members of list %s" %listName)
+  if memberNames == []:
+    print("No members in this list")
+  else:
+    displayPage(memberNames, currentPage)
+  userSelection = input('If you would like to delete a member type \'delete\'\nElse type \'back\' to go back\n%s\n%s\n' % (UserInput.scrollDownString, UserInput.scrollUpString))
+  if (userSelection == UserInput.scrollDownInput):
+    displayMembers(userId, listName, memberNames, memberIds, currentPage+1)
+  if (userSelection == UserInput.scrollUpInput):
+    displayMembers(userId, listName, memberNames, memberIds, currentPage-1)
+  if (userSelection == 'back'):
+    displayYourLists(userId)
+  if (userSelection == 'delete'):
+    while(True):
+      selection = input("Which member (by number) would you like to delete? ")
+      if isInt(selection) is False:
+        print("Please input a number")
+        continue
+      elif (int(selection) <= (currentPage*5)-5 or int(selection) > currentPage*5 or int(selection) > len(memberIds)):
+        print("Selection out of bounds")
+        continue
+      else:
+        print("User has been deleted")
+        database.deleteMember(listName, memberIds[int(selection)-1])
+      break
+  displayMembers(userId, listName, memberNames, memberIds, currentPage)
+                                                                                      
+                                                                
 # connect to the database, oracle id and pass should be specified in file
 # called connection.info
 welcomeScreen()
 database.closeDatabase()
+
 
 

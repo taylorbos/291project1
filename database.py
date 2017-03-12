@@ -99,7 +99,7 @@ def searchTweets(keywords):
     tweeterName = getUsername(rows[1])
     resultString = '%s %s At: %s' % (tweeterName, rows[3], rows[2])
     result.append(resultString)
-    ids.append(rows[1])
+    ids.append(rows[0])
   return result, ids
 
 def searchUsers(keyword):
@@ -225,5 +225,56 @@ def follow(flwer, flwee):
   else:
     return "You already follow %s" % (getUsername(flwee))
 
+def yourLists(userId):
+  curs.execute("SELECT LISTS.LNAME FROM LISTS WHERE OWNER = :u", {'u':userId})
+  l = curs.fetchall()
+  lists = []
+  for n in l:
+    lists.append(n[0])
+  return lists
+
+def otherLists(userId):
+  curs.execute("SELECT INCLUDES.LNAME FROM INCLUDES WHERE MEMBER = :u", {'u':userId})
+  l = curs.fetchall()
+  lists = []
+  for n in l:
+    lists.append(n[0])
+  return lists
+
+def getMembers(listName):
+  statement = "SELECT INCLUDES.MEMBER FROM INCLUDES WHERE LNAME = :l"
+  curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12))
+  curs.execute(statement, {'l':listName})
+  ms = curs.fetchall()
+  names = []
+  ids = []
+  for m in ms:
+    ids.append(m[0])
+    names.append(getUsername(m[0]))
+  return names, ids
+                                                          
+  
+def createList(listName, userId):
+  statement = "INSERT INTO LISTS VALUES (:l, :u)"
+  curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12), u = int)
+  curs.execute(statement, {'l':listName,'u':userId})
+  con.commit
+
+def deleteMember(listName, userId):
+  statement = "DELETE FROM INCLUDES WHERE LNAME = :l AND MEMBER = :u"
+  curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12), u = int)
+  curs.execute(statement, {'l':listName,'u':userId})
+  con.commit
+
+def ifList(listName):
+  statement = "SELECT * FROM LISTS WHERE LNAME = :l"
+  curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12))
+  curs.execute(statement, {'l':listName})
+  if curs.fetchall() is None:
+    return False
+  else:
+    return True
+                                  
+                                
 con = connectToDatabase()
 curs = con.cursor()
