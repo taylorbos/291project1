@@ -85,8 +85,9 @@ def displayUserMainPage(userId, currentPage=1, clear=True):
         print('Selection out of bounds!')
         continue
       else: displayMoreInfo(ids[int(selection)-1])
-      break
       clear = False;
+      break
+      
   
   # keep displaying the main page
   displayUserMainPage(userId, currentPage, clear)
@@ -128,8 +129,8 @@ def searchScreen(userId):
 
 
 
-def displaySearch(userId, currentPage, r, keywords, ids):
-  os.system('clear')
+def displaySearch(userId, currentPage, r, keywords, ids, clear=True):
+  if(clear): os.system('clear')
   print("Keywords: %s" %keywords)
   if r == []:
     print("No search results")
@@ -167,9 +168,11 @@ def displaySearch(userId, currentPage, r, keywords, ids):
         print('Selection out of bounds!')
         continue
       else: displayMoreInfo(ids[int(selection)-1])
+      clear = False
       break
+      
 
-  displaySearch(userId, 1, r, keywords, ids)
+  displaySearch(userId, 1, r, keywords, ids, clear)
 
 
 def userScreen(userId):
