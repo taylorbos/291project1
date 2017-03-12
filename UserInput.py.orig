@@ -12,7 +12,8 @@ registerString = 'To register, type \'register\''
 followersString = 'To see your followers, type \'followers\''
 followerInfoString = 'To see some information about your followers, type \'follower info\''
 mainPageString = 'To return to the main page, type \'main page\''
-followString = 'To follow a particular user, type \'follow\''
+<<<<<<< HEAD
+followString = 'To follow a particular '
 backString = 'To go back, type \'back\''
 manageListsString = 'To manange lists type \'lists\''
 yourListsString = 'To see your lists type \'mine\''
@@ -28,6 +29,12 @@ otherListsInput = 'others'
 yourListsInput = 'mine'
 manageListsInput = 'lists'
 backInput = 'back'
+=======
+followString = 'To follow a particular user, type \'follow\''
+userInfoString = 'To see more information about a user, type \'info\''
+
+followInput = 'follow'
+>>>>>>> origin/master
 searchInput = 'search'
 scrollDownInput = 'scroll down'
 scrollUpInput = 'scroll up'
