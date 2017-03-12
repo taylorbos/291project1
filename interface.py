@@ -270,7 +270,7 @@ def displayFollowersInfo(userId, followerId, currentPage):
     if currentPage == 0:
       for i in range(0, 3):
         if (i < len(tweets)):
-          print('%d %s' % (i+1, tweets[1]))
+          print('%d %s' % (i+1, tweets[i]))
     else:
       displayPage(tweets, currentPage)
   if currentPage == 0:
@@ -289,7 +289,7 @@ def displayFollowersInfo(userId, followerId, currentPage):
     os.system('clear')
     ln = input("Which list would you like to add to? ")
     if database.ifList(ln):
-      f = database.addMember(ln, followerId)
+      f = database.addMember(ln, followerId, userId)
       print(f)
     displayFollowersInfo(userId, followerId, currentPage)
   if (userSelection == UserInput.scrollDownInput):
