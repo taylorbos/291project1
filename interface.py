@@ -119,11 +119,35 @@ def displaySearch(userId, currentPage, r, keywords, ids):
                         % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.mainPageString))
   if (userSelection ==  UserInput.scrollDownInput):
     displaySearch(userId, currentPage+1, r, keywords, ids)
-  if (userSelection == UserInput.scrollUpInput):
+  elif (userSelection == UserInput.scrollUpInput):
     displaySearch(userId, currentPage-1, r, keywords, ids)
-  if (userSelection == UserInput.mainPageInput):
+  elif (userSelection == UserInput.mainPageInput):
     displayUserMainPage(userId, 1)
   #TODO: handle info, reply, retweet
+  elif(userSelection == UserInput.replyInput):
+    while(True):
+      selection = input('What tweet would you like to reply to? ')
+      if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids) or int(selection) < (currentPage*5-5)):
+        print('Selection out of bounds!')
+        continue
+      else: composeTweet(userId, ids[int(selection)-1])
+      break
+  elif(userSelection == UserInput.retweetInput):
+    while(True):
+      selection = input('What tweet would you like to retweet? ')
+      if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids) or int(selection) < (currentPage*5-5)):
+        print('Selection out of bounds!')
+        continue
+      else: database.registerRetweet(userId, ids[int(selection)-1])
+      break
+  elif(userSelection == UserInput.infoInput):   
+    while(True):
+      selection = input('What tweet would you like to know about? ')
+      if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids) or int(selection) < (currentPage*5-5)):
+        print('Selection out of bounds!')
+        continue
+      else: displayMoreInfo(ids[int(selection)-1])
+      break
 
   displaySearch(userId, 1, r, keywords, ids)
 
