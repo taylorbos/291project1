@@ -1,11 +1,11 @@
 import cx_Oracle
 import datetime
 import re
+import getpass
 
 def connectToDatabase():
-  f = open('connection.info')
-  username = f.readline().strip()
-  password = f.readline().strip()
+  username = input('Please enter your oracle username: ')
+  password = getpass.getpass(prompt='Please enter your oracle password: ')
   con = cx_Oracle.connect(username, password, "gwynne.cs.ualberta.ca:1521/CRS")	
   return con
 
@@ -155,7 +155,7 @@ def registerTweet(userId, tweet, replyTo=None):
   con.commit()
 
 def registerRetweet(userId, tweet):
-  statement = "SELECT FROM RETWEETS WHERE RETWEETS.USR = :userid AND TID = :tid"
+  statement = "SELECT USR FROM RETWEETS WHERE USR = :userid AND TID = :tid"
   curs.execute(statement, {'userid':userId, 'tid':tweet})
   rs = curs.fetchall()
   if(rs is not None):

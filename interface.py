@@ -25,7 +25,7 @@ def welcomeScreen():
 def displayUserMainPage(userId, currentPage=1, clear=True):
   # displays the main page for the selected user according to specs
   info, ids = database.getUserMainPageInfo(userId)
-  displayPage(info, currentPage)
+  displayPage(info, currentPage, clear)
   print('Displaying main page for user: %s' % database.getUsername(userId))
   print('Here are some tweets and retweets from people you follow')    
   userSelection = input('What would you like to do now? Please select an option:\n1. %s\n2.'
@@ -93,7 +93,7 @@ def composeTweet(userId, replyTo=None):
 
 
 
-def displayPage(info, pageNumber):
+def displayPage(info, pageNumber, clear):
   if(clear): os.system('clear')
   for i in range(pageNumber*5-5, pageNumber*5):
     if(i < 0 or i >= len(info)):
