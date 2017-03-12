@@ -280,18 +280,15 @@ def ifList(listName):
     return True
                                   
 def addMember(listName, userId, ownerId):
-  statement = "SELECT * FROM LISTS WHERE OWNER = :u AND LNAME = \
-:l"
-  curs.setinputsizes(u = int, l = curs.var(cx_Oracle.FIXED_CHAR,\
- 12))
+  statement = "SELECT * FROM LISTS WHERE OWNER = :u AND LNAME = :l"
+  curs.setinputsizes(u = int, l = curs.var(cx_Oracle.FIXED_CHAR, 12))
   curs.execute(statement, {'u':ownerId,'l':listName})
   r = curs.fetchall()
   if len(r) == 0:
     return "You don't own this list"
   else:
     statement = "INSERT INTO INCLUDES VALUES (:l, :u)"
-    curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12), u\
- = int)
+    curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12), u = int)
     curs.execute(statement, {'l':listName, 'u':userId})
     return "Member has been added to list"
 
