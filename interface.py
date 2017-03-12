@@ -57,7 +57,7 @@ def displayUserMainPage(userId, currentPage=1):
 
 
 def displayMoreInfo(tweet):
-	print(tweet)
+	print('This tweet has been retweeted %i times and replied to %i times' % (database.getNumberRetweets(tweet), database.getNumberReplies(tweet)))  	
 
 def composeTweet(userId):
 	os.system('clear')

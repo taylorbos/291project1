@@ -127,6 +127,21 @@ def registerTweet(userId, tweet):
   	
   con.commit()
 
+def getNumberRetweets(tweet):
+  statement = "SELECT COUNT(*) FROM RETWEETS WHERE RETWEETS.TID = :tid"
+  curs.execute(statement, {'tid':tweet})
+  rs = curs.fetchall()
+  if (rs is None):
+    return 0
+  return rs[0][0]
+
+def getNumberReplies(tweet):
+  statement = "SELECT COUNT(*) FROM TWEETS WHERE TWEETS.REPLYTO = :tid"
+  curs.execute(statement, {'tid':tweet})
+  rs = curs.fetchall()
+  if (rs is None):
+    return 0
+  return rs[0][0]
 
 
 con = connectToDatabase()
