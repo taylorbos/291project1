@@ -18,12 +18,12 @@ def welcomeScreen():
   else: 
     userId = login.loginProcedure(initalInput) # get userid 
   
+  os.system('clear')
   displayUserMainPage(userId) # on login success 
   
   
 def displayUserMainPage(userId, currentPage=1):
   # displays the main page for the selected user according to specs
-  os.system('clear')
   print('Displaying main page for user: %s' % database.getUsername(userId))
   print('Here are some tweets and retweets from people you follow')
   info, ids = database.getUserMainPageInfo(userId)
@@ -41,15 +41,20 @@ def displayUserMainPage(userId, currentPage=1):
   elif(userSelection == UserInput.tweetInput):
     composeTweet(userId)
   elif(userSelection == UserInput.replyInput):
-    composeReply(userId)
+    while(True):
+      selection = input('What tweet would you like to reply to? ')
+      if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids)):
+        print('Selection out of bounds!')
+        continue
+      else: composeTweet(userId, ids[int(selection)-1])
+      break
   elif(userSelection == UserInput.searchInput):
     searchScreen(userId)
   elif(userSelection == UserInput.userInput):
     userScreen(userId)
   elif(userSelection == UserInput.followersInput):
     listFollowers(userId)
-  elif(userSelection == UserInput.infoInput):
-	#TODO: make sure the user types a number, so cast can work    
+  elif(userSelection == UserInput.infoInput):   
     while(True):
       selection = input('What tweet would you like to know about? ')
       if(int(selection) < 1 or int(selection) > currentPage*5 or int(selection) > len(ids)):
@@ -63,15 +68,15 @@ def displayUserMainPage(userId, currentPage=1):
 
 
 def displayMoreInfo(tweet):
-	print('This tweet has been retweeted %i times and replied to %i times' % (database.getNumberRetweets(tweet), database.getNumberReplies(tweet)))  	
+	print('\nThis tweet has been retweeted %i times and replied to %i times\n' % (database.getNumberRetweets(tweet), database.getNumberReplies(tweet)))  	
 
-def composeTweet(userId):
+def composeTweet(userId, replyTo=None):
   os.system('clear')
   print('You are now composing a tweet, type your tweet on the next line, there is a maximum of 80 characters')
   tweet = input('...')
   if (len(tweet) > 80):
     print('Tweet is too long!')
-    database.registerTweet(userId, tweet)
+    database.registerTweet(userId, tweet, replyTo)
 
 
 def displayPage(info, pageNumber):

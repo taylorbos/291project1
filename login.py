@@ -2,8 +2,7 @@ import database
 import os
 
 def loginProcedure(userName = None):
-  os.system('clear')
-  print('Logging in a user\n')
+  print('\nLogging in a user\n')
   # check if this user is in database, if not goto new login procedure
   # on login success, return the users id
   if (userName is None):
@@ -14,6 +13,6 @@ def loginProcedure(userName = None):
     
   if (userId is None):
     print('Incorrect username or password!')
-    loginProcedure() # on login failure
+    userId = loginProcedure() # on login failure
   
   return userId # on login success
