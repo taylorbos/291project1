@@ -135,7 +135,7 @@ def displaySearch(userId, currentPage, r, keywords, ids, clear=True):
   if r == []:
     print("No search results")
   else:
-    displayPage(r, currentPage)
+    displayPage(r, currentPage, clear)
   userSelection = input("What would you like to do now? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n5. %s\n6. %s\n..."
                         % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.mainPageString))
   if (userSelection ==  UserInput.scrollDownInput):
@@ -171,7 +171,6 @@ def displaySearch(userId, currentPage, r, keywords, ids, clear=True):
       clear = False
       break
       
-
   displaySearch(userId, 1, r, keywords, ids, clear)
 
 

@@ -60,17 +60,16 @@ def getUserMainPageInfo(userId):
 	" TWEETS WHERE FOLLOWS.FLWEE = TWEETS.WRITER AND FOLLOWS.FLWER = :ui) UNION (SELECT RETWEETS.USR,"
 	" TWEETS.TEXT, RETWEETS.RDATE, RETWEETS.TID FROM FOLLOWS, RETWEETS, TWEETS WHERE FOLLOWS.FLWEE = RETWEETS.USR "
 	"AND FOLLOWS.FLWER = :ui AND TWEETS.TID = RETWEETS.TID)) A ORDER BY A.TDATE DESC")
-	curs.execute(statement, {'ui':userId})
-	r = curs.fetchall()
-	result = []
-	ids = []
-	for rows in r:
-		tweeterName = getUsername(rows[0])
-		resultString =  '%s %s At: %s' % (tweeterName, rows[1], rows[2])
-		result.append(resultString)
-		ids.append(rows[3])
-	
-	return (result, ids)
+  curs.execute(statement, {'ui':userId})
+  r = curs.fetchall()
+  result = []
+  ids = []
+  for rows in r:
+    tweeterName = getUsername(rows[0])
+    resultString =  '%s %s At: %s' % (tweeterName, rows[1], rows[2])
+    result.append(resultString)
+    ids.append(rows[3])
+  return (result, ids)
 
 
 def searchTweets(keywords):
