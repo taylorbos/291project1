@@ -155,6 +155,13 @@ def registerTweet(userId, tweet, replyTo=None):
   con.commit()
 
 def registerRetweet(userId, tweet):
+  statement = "SELECT FROM RETWEETS WHERE RETWEETS.USR = :userid AND TID = :tid"
+  curs.execute(statement, {'userid':userId, 'tid':tweet})
+  rs = curs.fetchall()
+  if(rs is not None):
+    print("You have already retweeted this tweet!")
+    return
+
   cdate = datetime.datetime.now()
   statement = "INSERT INTO RETWEETS VALUES (:userid, :tid, :cdate)"
   curs.execute(statement, {'userid':userId, 'tid':tweet, 'cdate':cdate})
