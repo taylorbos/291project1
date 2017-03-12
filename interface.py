@@ -35,9 +35,9 @@ def displayUserMainPage(userId, currentPage=1):
   if (userSelection == UserInput.logoutInput):
     welcomeScreen()
   elif(userSelection == UserInput.scrollDownInput): 	
-    displayUserMainPage(userId, currentPage+1)
+   if(currentPage+1 <= len(info)/5):  displayUserMainPage(userId, currentPage+1)
   elif(userSelection == UserInput.scrollUpInput): 	
-    displayUserMainPage(userId, currentPage-1)
+    if(currentPage-1 > 0): displayUserMainPage(userId, currentPage-1)
   elif(userSelection == UserInput.tweetInput):
     composeTweet(userId)
   elif(userSelection == UserInput.replyInput):
