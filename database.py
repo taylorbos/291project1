@@ -290,6 +290,7 @@ def addMember(listName, userId, ownerId):
     statement = "INSERT INTO INCLUDES VALUES (:l, :u)"
     curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12), u = int)
     curs.execute(statement, {'l':listName, 'u':userId})
+    con.commit()
     return "Member has been added to list"
 
                                
