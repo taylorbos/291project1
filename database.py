@@ -156,8 +156,8 @@ def registerTweet(userId, tweet, replyTo=None):
 
 def registerRetweet(userId, tweet):
   cdate = datetime.datetime.now()
-  statment = "INSERT INTO RETWEETS VALUES (:uid, :tid, :cdate)"
-  curs.execute(statement, {'uid':userId, 'tid':tweet, 'cdate'cdate})
+  statement = "INSERT INTO RETWEETS VALUES (:userid, :tid, :cdate)"
+  curs.execute(statement, {'userid':userId, 'tid':tweet, 'cdate':cdate})
   con.commit()
 
 
