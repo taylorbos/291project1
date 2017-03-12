@@ -76,7 +76,8 @@ def composeTweet(userId, replyTo=None):
   tweet = input('...')
   if (len(tweet) > 80):
     print('Tweet is too long!')
-    database.registerTweet(userId, tweet, replyTo)
+    composeTweet(userId, replyTo)
+  database.registerTweet(userId, tweet, replyTo)
 
 
 def displayPage(info, pageNumber):
