@@ -258,19 +258,20 @@ def createList(listName, userId):
   statement = "INSERT INTO LISTS VALUES (:l, :u)"
   curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12), u = int)
   curs.execute(statement, {'l':listName,'u':userId})
-  con.commit
+  con.commit()
 
 def deleteMember(listName, userId):
   statement = "DELETE FROM INCLUDES WHERE LNAME = :l AND MEMBER = :u"
   curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12), u = int)
   curs.execute(statement, {'l':listName,'u':userId})
-  con.commit
+  con.commit()
 
 def ifList(listName):
   statement = "SELECT * FROM LISTS WHERE LNAME = :l"
   curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12))
   curs.execute(statement, {'l':listName})
-  if curs.fetchall() is None:
+  rs = curs.fetchall()
+  if len(rs) == 0:
     return False
   else:
     return True

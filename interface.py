@@ -29,8 +29,8 @@ def displayUserMainPage(userId, currentPage=1, clear=True):
   print('Displaying main page for user: %s' % database.getUsername(userId))
   print('Here are some tweets and retweets from people you follow')    
   userSelection = input('What would you like to do now? Please select an option:\n1. %s\n2.'
-		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n9. %s\n10. %s\n...' % 
-		        (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.tweetString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.searchString, UserInput.userString, UserInput.followersString, UserInput.logoutString))
+		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n9. %s\n10. %s\n11. %s\n...' % 
+		        (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.tweetString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.searchString, UserInput.userString, UserInput.followersString, UserInput.manageListsString, UserInput.logoutString))
 
   if (userSelection == UserInput.logoutInput):
     welcomeScreen()
@@ -93,7 +93,7 @@ def composeTweet(userId, replyTo=None):
 
 
 
-def displayPage(info, pageNumber, clear):
+def displayPage(info, pageNumber, clear=True):
   if(clear): os.system('clear')
   for i in range(pageNumber*5-5, pageNumber*5):
     if(i < 0 or i >= len(info)):
@@ -279,7 +279,7 @@ def manageLists(userId):
   elif (userSelection == UserInput.otherListsInput):
     displayOtherLists(userId)
   elif (userSelection == UserInput.createListInput):
-    displayCreateList(userId)
+    createList(userId)
   else:
     manageLists(userId)
               
@@ -291,7 +291,7 @@ def createList(userId):
     print("Name too long")
     createList(userId)
   else:
-    if database.ifList is True:
+    if database.ifList(listName) is True:
       print("list already exists")
       createList(userId)
     else:
