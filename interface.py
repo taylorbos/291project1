@@ -29,8 +29,8 @@ def displayUserMainPage(userId, currentPage=1):
   info, ids = database.getUserMainPageInfo(userId)
   displayPage(info, currentPage)    
   userSelection = input('What would you like to do now? Please select an option:\n1. %s\n2.'
-		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n9. %s\n...' % 
-		        (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.tweetString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.searchString, UserInput.followersString, UserInput.logoutString))
+		' %s\n3. %s\n4. %s\n5. %s\n6. %s\n7. %s\n8. %s\n9. %s\n10. %s\n...' % 
+		        (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.tweetString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.searchString, UserInput.userString, UserInput.followersString, UserInput.logoutString))
 
   if (userSelection == UserInput.logoutInput):
     welcomeScreen()
@@ -39,9 +39,11 @@ def displayUserMainPage(userId, currentPage=1):
   elif(userSelection == UserInput.scrollUpInput): 	
     displayUserMainPage(userId, currentPage-1)
   elif(userSelection == UserInput.tweetInput):
-  	 composeTweet(userId)
+    composeTweet(userId)
   elif(userSelection == UserInput.searchInput):
     searchScreen(userId)
+  elif(userSelection == UserInput.userInput):
+    userScreen(userId)
   elif(userSelection == UserInput.followersInput):
     listFollowers(userId)
   elif(userSelection == UserInput.infoInput):
@@ -62,12 +64,12 @@ def displayMoreInfo(tweet):
 	print(tweet)
 
 def composeTweet(userId):
-	os.system('clear')
-	print('You are now composing a tweet, type your tweet on the next line, there is a maximum of 80 characters')
-	tweet = input('...')
-	if (len(tweet) > 80):
-		print('Tweet is too long!')
-	database.registerTweet(userId, tweet)
+  os.system('clear')
+  print('You are now composing a tweet, type your tweet on the next line, there is a maximum of 80 characters')
+  tweet = input('...')
+  if (len(tweet) > 80):
+    print('Tweet is too long!')
+    database.registerTweet(userId, tweet)
 
 
 def displayPage(info, pageNumber):
@@ -87,6 +89,8 @@ def searchScreen(userId):
   #else:
    # displayPage(r, currentPage)
 
+
+
 def displaySearch(userId, currentPage, r, keywords, ids):
   os.system('clear')
   print("Keywords: %s" %keywords)
@@ -105,6 +109,38 @@ def displaySearch(userId, currentPage, r, keywords, ids):
   #TODO: handle info, reply, retweet
 
   displaySearch(userId, 1, r, keywords, ids)
+
+
+def userScreen(userId):
+  os.system('clear')
+  keyword = input("Enter the user or city you would like to search: ")
+  r, ids = database.searchTweets(keyword)
+  displayUserSearch(userId, 1, r, keyword, ids)
+  #if r == []:
+   # print("No search results")
+  #else:
+   # displayPage(r, currentPage)
+
+def displayUserSearch(userId, currentPage, r, keyword, ids):
+  os.system('clear')
+  print("Keyword: %s" %keyword)
+  if r == []:
+    print("No search results")
+  else:
+    displayPage(r, currentPage)
+  userSelection = input("What would you like to do now? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n..."
+                        % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.infoString, UserInput.mainPageString))
+  if (userSelection ==  UserInput.scrollDownInput):
+    displaySearch(userId, currentPage+1, r, keywords, ids)
+  if (userSelection == UserInput.scrollUpInput):
+    displaySearch(userId, currentPage-1, r, keywords, ids)
+  if (userSelection == UserInput.mainPageInput):
+    displayUserMainPage(userId, 1)
+  #TODO: handle info
+
+  displaySearch(userId, 1, r, keyword, ids)
+
+
 
 def isInt(s):
   try:

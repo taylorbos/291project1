@@ -102,6 +102,31 @@ def searchTweets(keywords):
     ids.append(rows[1])
   return result, ids
 
+def searchUsers(keyword):
+  keyword = input("Enter #hastags or words to search: ")
+  statement = "SELECT DISTINCT * FROM ("
+  n = 0
+  sizes = ()
+  args = ()
+
+  statement = statement + "(SELECT * FROM USERS WHERE USERS.TEXT LIKE :" + str(n) + ") "
+
+  sizes = sizes + (curs.var(cx_Oracle.FIXED_CHAR, 20),)
+  args = args + ("%" + keyword + "%",)
+  statement = statement + ")"
+  
+  curs.setinputsizes(*sizes)
+  curs.execute(statement, args)
+  r = curs.fetchall()
+  result = []
+  ids = []
+  for rows in r:
+    tweeterName = getUsername(rows[1])
+    resultString = '%s %s At: %s' % (tweeterName, rows[3], rows[2])
+    result.append(resultString)
+    ids.append(rows[1])
+  return result, ids
+
 
 def registerTweet(userId, tweet):
   getHighestId = "SELECT MAX(TID) FROM TWEETS"
