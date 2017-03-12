@@ -140,9 +140,9 @@ def displaySearch(userId, currentPage, r, keywords, ids, clear=True):
                         % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.infoString, UserInput.replyString, UserInput.retweetString, UserInput.mainPageString))
   if (userSelection ==  UserInput.scrollDownInput):
     displaySearch(userId, currentPage+1, r, keywords, ids)
-  elif (userSelection == UserInput.scrollUpInput):
+  if (userSelection == UserInput.scrollUpInput):
     displaySearch(userId, currentPage-1, r, keywords, ids)
-  elif (userSelection == UserInput.mainPageInput):
+  if (userSelection == UserInput.mainPageInput):
     displayUserMainPage(userId, 1)
   #TODO: handle info, reply, retweet
   elif(userSelection == UserInput.replyInput):
@@ -177,7 +177,8 @@ def displaySearch(userId, currentPage, r, keywords, ids, clear=True):
 def userScreen(userId):
   os.system('clear')
   keyword = input("Enter the user or city you would like to search: ")
-  r, ids = database.searchTweets(keyword)
+  r, ids = database.searchUsers(keyword)
+  database.searchUsers(keyword)
   displayUserSearch(userId, 1, r, keyword, ids)
   #if r == []:
    # print("No search results")
@@ -192,16 +193,28 @@ def displayUserSearch(userId, currentPage, r, keyword, ids):
   else:
     displayPage(r, currentPage)
   userSelection = input("What would you like to do now? Please select an option:\n1. %s\n2. %s\n3. %s\n4. %s\n..."
-                        % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.infoString, UserInput.mainPageString))
-  if (userSelection ==  UserInput.scrollDownInput):
-    displaySearch(userId, currentPage+1, r, keywords, ids)
-  if (userSelection == UserInput.scrollUpInput):
-    displaySearch(userId, currentPage-1, r, keywords, ids)
-  if (userSelection == UserInput.mainPageInput):
+                        % (UserInput.scrollDownString, UserInput.scrollUpString, UserInput.userInfoString, UserInput.mainPageString))
+  if (userSelection == UserInput.scrollDownInput):
+    displayUserSearch(userId, currentPage+1, r, keyword, ids)
+  elif (userSelection == UserInput.scrollUpInput):
+    displayUserSearch(userId, currentPage-1, r, keyword, ids)
+  elif (userSelection == UserInput.mainPageInput):
     displayUserMainPage(userId, 1)
-  #TODO: handle info
+  elif (userSelection == UserInput.infoInput):
+    while(True):
+      selection = input("Which user (by number) would you like to know about? ")
+      if isInt is False:
+        print("Please input a number")
+        continue
+      elif(int(selection) <= (currentPage*5)-5  or int(selection) > currentPage*5 or int(selection) > len(r)):
+        print("Selection out of bounds")
+        continue
+      else:
+        os.system('clear')
+        displayFollowersInfo(userId, ids[int(selection)-1], 0)
+      break
 
-  displaySearch(userId, 1, r, keyword, ids)
+  displayUserSearch(userId, 1, r, keyword, ids)
 
 
 
@@ -311,6 +324,7 @@ def createList(userId):
     if database.ifList(listName) is True:
       print("list already exists")
       listName = createList(userId)
+
     else:
       database.createList(listName, userId)
                     

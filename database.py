@@ -105,28 +105,25 @@ def searchTweets(keywords):
   return result, ids
 
 def searchUsers(keyword):
-  keyword = input("Enter #hastags or words to search: ")
-  statement = "SELECT DISTINCT * FROM ("
-  n = 0
-  sizes = ()
-  args = ()
+  #keyword = input("Enter the user or city you would like to search: ")
+  statement = "SELECT DISTINCT * FROM (SELECT NAME, CITY FROM USERS WHERE NAME LIKE :keyword1 OR CITY LIKE:keyword2 )"
 
-  statement = statement + "(SELECT * FROM USERS WHERE USERS.TEXT LIKE :" + str(n) + ") "
-
-  sizes = sizes + (curs.var(cx_Oracle.FIXED_CHAR, 20),)
-  args = args + ("%" + keyword + "%",)
-  statement = statement + ")"
-  
-  curs.setinputsizes(*sizes)
+  #keyword1 = (curs.var(cx_Oracle.FIXED_CHAR, 20))
+  #keyword2 = (curs.var(cx_Oracle.FIXED_CHAR, 12))
+  args = {'keyword1':"%"+ keyword +"%", 'keyword2':"%"+keyword+"%"}
+ 
+  curs.setinputsizes(keyword1 = curs.var(cx_Oracle.FIXED_CHAR, 20), keyword2 = curs.var(cx_Oracle.FIXED_CHAR, 12))
   curs.execute(statement, args)
   r = curs.fetchall()
+  print(r)
+  
   result = []
   ids = []
   for rows in r:
-    tweeterName = getUsername(rows[1])
-    resultString = '%s %s At: %s' % (tweeterName, rows[3], rows[2])
+    resultString = '%s %s' % (rows[0].strip(), rows[1])
     result.append(resultString)
     ids.append(rows[1])
+  result.sort(key=len)
   return result, ids
 
 
