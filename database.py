@@ -82,11 +82,13 @@ def searchTweets(keywords):
     if keyword[0] == "#":
       n = n + 1
       statement = statement + "(SELECT TWEETS.* FROM TWEETS, MENTIONS WHERE TWEETS.TID = MENTIONS.TID AND MENTIONS.TERM = :" + str(n) + ") "
+      print(str(n))
       sizes = sizes + (curs.var(cx_Oracle.FIXED_CHAR, 10),)
       args = args + (keyword[1:],)
     else:
       n = n + 1
       statement = statement + "(SELECT TWEETS.* FROM TWEETS WHERE TWEETS.TEXT LIKE :" + str(n) + ") "
+      print(str(n))
       sizes = sizes + (curs.var(cx_Oracle.FIXED_CHAR, 10),)
       args = args + ("%" + keyword + "%",)
   statement = statement + ")"
@@ -99,30 +101,26 @@ def searchTweets(keywords):
     tweeterName = getUsername(rows[1])
     resultString = '%s %s At: %s' % (tweeterName, rows[3], rows[2])
     result.append(resultString)
-    ids.append(rows[0])
+    ids.append(rows[1])
   return result, ids
 
 def searchUsers(keyword):
-  keyword = input("Enter #hastags or words to search: ")
-  statement = "SELECT DISTINCT * FROM ("
-  n = 0
-  sizes = ()
-  args = ()
+  #keyword = input("Enter the user or city you would like to search: ")
+  statement = "SELECT DISTINCT * FROM (SELECT NAME, CITY FROM USERS WHERE NAME LIKE :keyword1 OR CITY LIKE:keyword2 )"
 
-  statement = statement + "(SELECT * FROM USERS WHERE USERS.TEXT LIKE :" + str(n) + ") "
-
-  sizes = sizes + (curs.var(cx_Oracle.FIXED_CHAR, 20),)
-  args = args + ("%" + keyword + "%",)
-  statement = statement + ")"
-  
-  curs.setinputsizes(*sizes)
+  #keyword1 = (curs.var(cx_Oracle.FIXED_CHAR, 20))
+  #keyword2 = (curs.var(cx_Oracle.FIXED_CHAR, 12))
+  args = {'keyword1':"%"+ keyword +"%", 'keyword2':"%"+keyword+"%"}
+ 
+  curs.setinputsizes(keyword1 = curs.var(cx_Oracle.FIXED_CHAR, 20), keyword2 = curs.var(cx_Oracle.FIXED_CHAR, 12))
   curs.execute(statement, args)
   r = curs.fetchall()
+  print(r)
+  
   result = []
   ids = []
   for rows in r:
-    tweeterName = getUsername(rows[1])
-    resultString = '%s %s At: %s' % (tweeterName, rows[3], rows[2])
+    resultString = '%s %s' % (rows[0].strip(), rows[1])
     result.append(resultString)
     ids.append(rows[1])
   return result, ids
@@ -152,12 +150,6 @@ def registerTweet(userId, tweet, replyTo=None):
     statement = "INSERT INTO MENTIONS VALUES (:tid, :hashtag)"
     curs.execute(statement, {'tid':tid, 'hashtag':hashtags})
   	
-  con.commit()
-
-def registerRetweet(userId, tweet):
-  cdate = datetime.datetime.now()
-  statement = "INSERT INTO RETWEETS VALUES (:userid, :tid, :cdate)"
-  curs.execute(statement, {'userid':userId, 'tid':tweet, 'cdate':cdate})
   con.commit()
 
 
@@ -218,56 +210,5 @@ def follow(flwer, flwee):
   else:
     return "You already follow %s" % (getUsername(flwee))
 
-def yourLists(userId):
-  curs.execute("SELECT LISTS.LNAME FROM LISTS WHERE OWNER = :u", {'u':userId})
-  l = curs.fetchall()
-  lists = []
-  for n in l:
-    lists.append(n[0])
-  return lists
-
-def otherLists(userId):
-  curs.execute("SELECT INCLUDES.LNAME FROM INCLUDES WHERE MEMBER = :u", {'u':userId})
-  l = curs.fetchall()
-  lists = []
-  for n in l:
-    lists.append(n[0])
-  return lists
-
-def getMembers(listName):
-  statement = "SELECT INCLUDES.MEMBER FROM INCLUDES WHERE LNAME = :l"
-  curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12))
-  curs.execute(statement, {'l':listName})
-  ms = curs.fetchall()
-  names = []
-  ids = []
-  for m in ms:
-    ids.append(m[0])
-    names.append(getUsername(m[0]))
-  return names, ids
-                                                          
-  
-def createList(listName, userId):
-  statement = "INSERT INTO LISTS VALUES (:l, :u)"
-  curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12), u = int)
-  curs.execute(statement, {'l':listName,'u':userId})
-  con.commit
-
-def deleteMember(listName, userId):
-  statement = "DELETE FROM INCLUDES WHERE LNAME = :l AND MEMBER = :u"
-  curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12), u = int)
-  curs.execute(statement, {'l':listName,'u':userId})
-  con.commit
-
-def ifList(listName):
-  statement = "SELECT * FROM LISTS WHERE LNAME = :l"
-  curs.setinputsizes(l = curs.var(cx_Oracle.FIXED_CHAR, 12))
-  curs.execute(statement, {'l':listName})
-  if curs.fetchall() is None:
-    return False
-  else:
-    return True
-                                  
-                                
 con = connectToDatabase()
 curs = con.cursor()
