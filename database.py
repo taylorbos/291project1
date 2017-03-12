@@ -128,16 +128,16 @@ def searchUsers(keyword):
   return result, ids
 
 
-def registerTweet(userId, tweet):
+def registerTweet(userId, tweet, replyTo=None):
   getHighestId = "SELECT MAX(TID) FROM TWEETS"
   curs.execute(getHighestId)
   tid = curs.fetchone()[0]
   if(tid is None): tid = 0
   else: tid = tid + 1
   cdate = datetime.datetime.now()
-  statement = "INSERT INTO TWEETS VALUES (:tid, :userid, :cdate, :text, NULL)"
+  statement = "INSERT INTO TWEETS VALUES (:tid, :userid, :cdate, :text, :rplyto)"
   curs.setinputsizes(tid = int, userid = int, cdate = datetime.datetime, text = curs.var(cx_Oracle.FIXED_CHAR, 80))  
-  curs.execute(statement, {'tid':tid, 'userid':userId, 'cdate':cdate, 'text':tweet})
+  curs.execute(statement, {'tid':tid, 'userid':userId, 'cdate':cdate, 'text':tweet, 'rplyto':replyTo})
 
   hashtagGrabber = re.findall(r"#(\w+)", tweet)
   statement = "SELECT TERM FROM MENTIONS"

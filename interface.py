@@ -40,6 +40,8 @@ def displayUserMainPage(userId, currentPage=1):
     displayUserMainPage(userId, currentPage-1)
   elif(userSelection == UserInput.tweetInput):
     composeTweet(userId)
+  elif(userSelection == UserInput.replyInput):
+    composeReply(userId)
   elif(userSelection == UserInput.searchInput):
     searchScreen(userId)
   elif(userSelection == UserInput.userInput):
